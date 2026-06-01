@@ -17,7 +17,7 @@ export const getUserRequests = async (req, res) => {
     const userId = req.user.userId
     try {
         const userRequests = await getRequestsByUserId(userId)
-        res.status(200).json({ requests: userRequests })
+        res.status(200).json(userRequests)
     } catch (error) {
         console.error('Error fetching user requests:', error)
         res.status(500).json({ message: 'Internal server error' })
