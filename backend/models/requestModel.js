@@ -10,3 +10,13 @@ export const createRequest = async (requestData) => {
         throw error
     }
 }
+
+export const getRequestsByUserId = async (userId) => {
+    try {
+        const [userRequests] = await db.select().from(requests).where(eq(requests.user_id, userId))
+        return userRequests
+    } catch (error) {
+        console.error('Error fetching requests:', error)
+        throw error
+    }
+}
