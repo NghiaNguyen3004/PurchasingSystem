@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "postgres": "^3.4.9"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "The backend for my P2P system",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js"
+  },
+  "author": "Nghia Nguyen",
+  "license": "MIT",
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}
