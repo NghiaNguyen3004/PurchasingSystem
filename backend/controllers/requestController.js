@@ -1,4 +1,4 @@
-import {createRequest, getRequestsByUserId} from '../models/requestModel.js'
+import {createRequest, getRequestsByUserId, approveRequest, rejectRequest} from '../models/requestModel.js'
 
 export const submitRequest = async (req, res) => {
     const {item_name, quantity, price_per_unit, budget_code, reason} = req.body
@@ -20,6 +20,28 @@ export const getUserRequests = async (req, res) => {
         res.status(200).json(userRequests)
     } catch (error) {
         console.error('Error fetching user requests:', error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export const approveRequestController = async (req, res) => {
+    const { requestId } = req.params
+    try {
+        const updatedRequest = await approveRequest(requestId)
+        res.status(200).json(updatedRequest)
+    } catch (error) {
+        console.error('Error approving request:', error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export const rejectRequestController = async (req, res) => {
+    const { requestId } = req.params
+    try {
+        const updatedRequest = await rejectRequest(requestId)
+        res.status(200).json(updatedRequest)
+    } catch (error) {
+        console.error('Error rejecting request:', error)
         res.status(500).json({ message: 'Internal server error' })
     }
 }

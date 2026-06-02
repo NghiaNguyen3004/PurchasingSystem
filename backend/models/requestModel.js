@@ -20,3 +20,23 @@ export const getRequestsByUserId = async (userId) => {
         throw error
     }
 }
+
+export const approveRequest = async (requestId) => {
+    try {
+        const updatedRequest = await db.update(requests).set({status: "Approved"}).where(eq(requests.id, requestId)).returning()
+        return updatedRequest
+    } catch (error) {
+        console.error('Error approving request:', error)
+        throw error
+    }
+}
+
+export const rejectRequest = async (requestId) => {
+    try {
+        const updatedRequest = await db.update(requests).set({status: "Rejected"}).where(eq(requests.id, requestId)).returning()
+        return updatedRequest
+    } catch (error) {
+        console.error('Error rejecting request:', error)
+        throw error
+    }
+}

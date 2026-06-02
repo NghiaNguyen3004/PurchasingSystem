@@ -14,3 +14,10 @@ export const authenticateToken = (req, res, next) => {
         return res.status(401).json({ error: 'Invalid token' });
     }
 }
+
+export const checkRole = (req, res, next) => {
+    if (req.user.user_type !== 'approver') {
+        return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
+    } 
+    next();
+}
