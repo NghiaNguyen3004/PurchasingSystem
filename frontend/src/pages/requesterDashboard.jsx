@@ -100,7 +100,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
             { label: "Total Requests", value: stats.total, accent: "#6366f1" },
             { label: "Pending Review", value: stats.pending, accent: "#f59e0b" },
             { label: "Approved", value: stats.approved, accent: "#22c55e" },
-            { label: "Total Value", value: `$${totalValue.toLocaleString()}`, accent: "#8b5cf6" },
+            { label: "Rejected", value: stats.rejected, accent: "#ef4444" },
           ].map((s) => (
             <div className="stat-card" key={s.label} style={{ "--accent": s.accent }}>
               <div className="stat-value" style={{ color: s.accent }}>{s.value}</div>
