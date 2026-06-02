@@ -6,11 +6,9 @@ import 'dotenv/config'
 
 export const login = async (req, res) => {
     const { username, password } = req.body
-    console.log(username);
 
     try {
         const user = await getUserByUsername(username)
-
         if (!user) {
             return res.status(401).json({ message: 'Invalid username or password' })
         }
@@ -18,7 +16,7 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid username or password' })
         }
-        const token = jwt.sign({ userId: user.id, username: user.username, department: user.department }, process.env.JWT_SECRET, { expiresIn: '2h' })
+        const token = jwt.sign({ userId: user.id, username: user.username, userType: user.user_type, department: user.department }, process.env.JWT_SECRET, { expiresIn: '2h' })
         res.json({ token }) 
     } catch (error) {
         console.log('Login error:', error)

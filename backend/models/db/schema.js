@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, smallint, timestamp, check, numeric} from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, integer, smallint, timestamp, check} from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 
@@ -6,6 +6,7 @@ import { sql } from 'drizzle-orm'
 export const users = pgTable('users', {
     id:serial('id').primaryKey(),
     username: text('username').notNull(),
+    user_type: text('user_type').notNull(),
     password: text('password').notNull(),
     department: text('department').notNull(),
     created_at: timestamp('created_at').defaultNow(),
@@ -22,7 +23,7 @@ export const requests = pgTable('requests', {
     user_id: integer('user_id').notNull().references(() => users.id),
     item_name: text('item_name').notNull(),
     quantity: integer('quantity').notNull(),
-    price_per_unit: numeric('price_per_unit', 10, 2).notNull(),
+    price_per_unit: integer('price_per_unit').notNull(),
     budget_code: text('budget_code').notNull(),
     reason: text('reason').notNull(),
     requested_by: text('requested_by').notNull(),
@@ -35,15 +36,6 @@ export const requests = pgTable('requests', {
         check('quantity_check', sql`${requests.quantity} > 0`),
         check('price_check', sql`${requests.price_per_unit} > 0`),
         check('status_check', sql`${requests.status} in ('Pending', 'Approved', 'Rejected')`)
- 
     ]
-)
-
-export const adminUsers = pgTable('admin_users', {
-    id: serial('id').primaryKey(),
-    username: text('username').notNull(),
-    password: text('password').notNull(),
-    created_at: timestamp('created_at').defaultNow(),
-}
 )
 

@@ -17,11 +17,11 @@ export default function Login({ onLogin }) {
       const res = await fetch(`${SERVER_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-           body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, user_type: activeTab }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
-      onLogin(data.token);
+      onLogin(data.token, activeTab);
     } catch (err) {
       setError(err.message);
     } finally {

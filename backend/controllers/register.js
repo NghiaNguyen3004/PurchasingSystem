@@ -10,7 +10,7 @@ export const register = async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds)
         const newUser = await createUser({ username, user_type, password: hashedPassword, department })
-        const token = jwt.sign({userId: newUser.id, username: newUser.username, department: newUser.department}, process.env.JWT_SECRET, { expiresIn: '2h' });
+        const token = jwt.sign({userId: newUser.id, username: newUser.username, userType: newUser.user_type, department: newUser.department}, process.env.JWT_SECRET, { expiresIn: '2h' });
         res.status(201).json({ message: 'User created successfully', token })
     } catch (error) {
         console.log('Registration error:', error)

@@ -8,13 +8,6 @@
       "when": 1780297674430,
       "tag": "0000_faithful_namora",
       "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1780389896980,
-      "tag": "0001_dry_junta",
-      "breakpoints": true
     }
   ]
 }
