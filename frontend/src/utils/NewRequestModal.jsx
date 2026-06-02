@@ -16,7 +16,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
     const [error, setError] = useState("");
 
     const handleDepartmentChange = (e) => {
-        const dept = e.target.value;
+        const dept = e.target.value || "";
         setForm({ ...form, department: dept, budget_code: generateBudgetCode(dept) });
     };
 
@@ -59,7 +59,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
                     required
                 />
                 </div>
-                <div className="field-group">
+                {/* <div className="field-group">
                     <label className="field-label">Budget Code</label>
                     <input
                     className="field-input"
@@ -67,7 +67,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
                     readOnly 
                     style={{ opacity: 0.6, cursor: "not-allowed" }}
                 />
-            </div>
+                </div> */}
             </div>
             <div className="form-row">
                 <div className="field-group">

@@ -1,33 +1,23 @@
 import { useState, useEffect } from "react";
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000"; // from .env file or default to ""
 import "../styles/requesterDashboard.css";
+import "../styles/filterModal.css";
 import { getMyRequests, submitRequest} from "../services/api.js";
 import NewRequestModal from "../utils/NewRequestModal.jsx";
-
-const statusColors = {
-  Pending:  { bg: "rgba(234,179,8,0.12)",  text: "#fbbf24", dot: "#f59e0b" },
-  Approved: { bg: "rgba(34,197,94,0.12)",  text: "#4ade80", dot: "#22c55e" },
-  Rejected: { bg: "rgba(239,68,68,0.12)",  text: "#f87171", dot: "#ef4444" },
-};
-
-function StatusBadge({ status }) {
-  const c = statusColors[status] || statusColors.Pending;
-  return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", gap: 6,
-      background: c.bg, color: c.text,
-      padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 500,
-    }}>
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.dot, display: "inline-block" }} />
-      {status}
-    </span>
-  );
-}
+import FiltersModal from "../utils/FiltersModal.jsx";
+import StatusBadge from "../components/statusBadge.jsx";
 
 export default function RequesterDashboard({ token, user, onLogout }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [showModal, setShowModal] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+
+  const [filters, setFilters] = useState({ 
+    status: "All", 
+    dateFrom: "",
+    dateTo:"", 
+  });
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -46,14 +36,29 @@ export default function RequesterDashboard({ token, user, onLogout }) {
     fetchRequests();
   };
 
+  const filteredRequests = requests.filter(r => {
+      const statusMatch = filters.status === "All" || r.status === filters.status
+
+      const created = new Date(r.created_at)
+      const from = filters.dateFrom ? new Date(filters.dateFrom) : null
+      const to = filters.dateTo ? new Date(filters.dateTo) : null
+
+      const dateMatch =
+        (!from || created >= from) &&
+        (!to || created <= to)
+
+      return statusMatch && dateMatch
+  });
+
   const stats = {
     total: requests.length,
     pending: requests.filter(r => r.status === "Pending").length,
     approved: requests.filter(r => r.status === "Approved").length,
     rejected: requests.filter(r => r.status === "Rejected").length,
+    totalValue: requests.reduce((sum, r) => sum + (r.quantity * r.price_per_unit), 0)
   };
 
-  const totalValue = requests.reduce((sum, r) => sum + (r.quantity * r.price_per_unit), 0);
+
 
 
   return (
@@ -85,13 +90,21 @@ export default function RequesterDashboard({ token, user, onLogout }) {
       {/* Main */}
       <main className="dash-main">
         <div className="dash-topbar">
-          <div>
-            <h1 className="dash-title">My Requests</h1>
-            <p className="dash-sub">Track and manage your purchase requests</p>
+          <h1 className="dash-title">My Requests</h1>
+          <div className="topbar-actions">
+            <button className="btn-filter" onClick={() => setShowFilter(true)}>
+              ⚙ Filter
+              {/* show a dot if any filter is active */}
+              {(filters.status !== "All" || filters.dateFrom || filters.dateTo) && (
+                <span className="filter-dot" />
+              )}
+            </button>
+
+            <button className="btn-primary" onClick={() => setShowModal(true)}>
+              <span>＋</span> New Request
+            </button>
           </div>
-          <button className="btn-primary" onClick={() => setShowModal(true)}>
-            <span>＋</span> New Request
-          </button>
+          
         </div>
 
         {/* Stats */}
@@ -135,7 +148,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
                 </tr>
               </thead>
               <tbody>
-                {requests.map((r) => (
+                {filteredRequests.map((r) => (
                   <tr key={r.id}>
                     <td className="td-item">{r.item_name}</td>
                     <td>{r.quantity}</td>
@@ -154,6 +167,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
       </main>
 
       {showModal && <NewRequestModal onClose={() => setShowModal(false)} onSubmit={handleSubmit} />}
+      {showFilter && <FiltersModal filters={filters} onApply={setFilters} onClose={() => setShowFilter(false)}/>}
     </div>
   );
 }

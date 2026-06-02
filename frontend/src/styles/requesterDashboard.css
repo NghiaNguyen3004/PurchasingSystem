@@ -104,6 +104,12 @@
         margin-bottom: 28px;
     }
 
+    .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
     .dash-title {
         font-family: 'Syne', sans-serif;
         font-size: 26px; font-weight: 800;
@@ -319,5 +325,5 @@
         border-radius: 50%;
         animation: spin 0.7s linear infinite;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
+    
