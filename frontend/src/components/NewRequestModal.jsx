@@ -62,14 +62,15 @@ export default function NewRequestModal({ onClose, onSubmit }) {
 
     useKeyboardShortcuts([
         { key: "Escape", fn: handleDone },
+        { key: "Enter", fn: handleSaveAndContinue },
     ]);
-    
+
     return (
         <div className="modal-overlay" onClick={onClose}>
         <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
             <h2 className="modal-title">New Purchase Request</h2>
-            <button className="modal-close" onClick={handleDone}>✕</button>
+            <button className="modal-close" onClick={onClose}>✕</button>
             </div>
 
             {savedCount > 0 && (

@@ -4,43 +4,25 @@ import "../styles/requesterDashboard.css";
 import "../styles/filterModal.css";
 import "../styles/keyboardShortcuts.css"
 
-import { getMyRequests, submitRequest} from "../services/api.js";
 import NewRequestModal from "../components/NewRequestModal.jsx";
 import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
+import { useRequest } from "../hook/useRequest.js";
 
 
 
 export default function RequesterDashboard({ token, user, onLogout }) {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [showModal, setShowModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+
+  const {requests, loading, fetchRequests, submitNewRequest} = useRequest(token)
 
   const [filters, setFilters] = useState({ 
     status: "All", 
     dateFrom: "",
     dateTo:"", 
   });
-
-  const fetchRequests = async () => {
-    setLoading(true);
-    try {
-      const data = await getMyRequests(token);
-      setRequests(data);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { fetchRequests(); }, [token]);
-
-  const handleSubmit = async (form) => {
-    const res = await submitRequest(token, form);
-    fetchRequests();
-  };
 
   const filteredRequests = requests.filter(r => {
       const statusMatch = filters.status === "All" || r.status === filters.status
@@ -71,8 +53,6 @@ export default function RequesterDashboard({ token, user, onLogout }) {
     { key: "f", fn: () => setShowFilter(true) },
     { key: "F", fn: () => setShowFilter(true) },
   ])
-
-
 
   return (
     <div className="dash-root">
@@ -182,7 +162,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
         </div>
       </main>
 
-      {showModal && <NewRequestModal onClose={() => setShowModal(false)} onSubmit={handleSubmit} />}
+      {showModal && <NewRequestModal onClose={() => setShowModal(false)} onSubmit={submitNewRequest} />}
       {showFilter && <FiltersModal filters={filters} onApply={setFilters} onClose={() => setShowFilter(false)}/>}
     </div>
   );
