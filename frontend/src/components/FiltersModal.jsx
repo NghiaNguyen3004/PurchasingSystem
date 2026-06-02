@@ -1,6 +1,10 @@
 import {useState} from "react"
+
+import "../styles/keyboardShortcuts.css"
 import "../styles/requestModal.css"
 import "../styles/filterModal.css"
+
+import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 
 export default function FiltersModal({ filters, onApply, onClose }) {
     const [temp, setTemp] = useState(filters)
@@ -16,6 +20,12 @@ export default function FiltersModal({ filters, onApply, onClose }) {
         onApply(reset)
         onClose()
     }
+
+    useKeyboardShortcuts([
+        { key: "Enter", fn: handleApply },
+        { key: "Escape", fn: onClose },
+        { key:"c", fn: handleClear}
+    ]);
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -60,8 +70,8 @@ export default function FiltersModal({ filters, onApply, onClose }) {
             </div>
 
             <div className="modal-actions">
-            <button className="btn-secondary" onClick={handleClear}>Clear</button>
-            <button className="btn-primary" onClick={handleApply}>Apply</button>
+            <button className="btn-secondary" onClick={handleClear}>Clear <kbd className="kbd-dark">C</kbd> </button>
+            <button className="btn-primary" onClick={handleApply}>Apply <kbd className="kbd">Enter</kbd></button>
             </div>
         </div>
         </div>

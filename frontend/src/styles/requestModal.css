@@ -139,14 +139,4 @@
 
     .btn-save-continue:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .kbd-dark {
-    padding: 1px 6px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    font-size: 10px;
-    font-family: monospace;
-    color: rgba(255,255,255,0.3);
-    margin-left: 4px;
-    }
     

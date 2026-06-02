@@ -1,0 +1,27 @@
+    .kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px 6px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: monospace;
+        color: rgba(255,255,255,0.4);
+        margin-left: 4px;
+    }
+
+    .kbd-dark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px 6px;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: monospace;
+        color: rgba(255,255,255,0.3);
+        margin-left: 4px;
+    }

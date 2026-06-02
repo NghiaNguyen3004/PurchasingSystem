@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
+
 import "../styles/requesterDashboard.css";
 import "../styles/filterModal.css";
+import "../styles/keyboardShortcuts.css"
+
 import { getMyRequests, submitRequest} from "../services/api.js";
 import NewRequestModal from "../components/NewRequestModal.jsx";
 import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
+import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
+
+
 
 export default function RequesterDashboard({ token, user, onLogout }) {
   const [requests, setRequests] = useState([]);
@@ -59,6 +65,13 @@ export default function RequesterDashboard({ token, user, onLogout }) {
   };
 
 
+  useKeyboardShortcuts([
+    { key: "n", fn: () => setShowModal(true) },
+    { key: "N", fn: () => setShowModal(true) },
+    { key: "f", fn: () => setShowFilter(true) },
+    { key: "F", fn: () => setShowFilter(true) },
+  ])
+
 
 
   return (
@@ -67,7 +80,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="logo-icon">⬡</span>
-          <span className="logo-text">ProcureFlow</span>
+          <span className="logo-text">Flow</span>
         </div>
         <nav className="sidebar-nav">
           <a className="nav-item nav-active" href="#">
@@ -75,6 +88,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
           </a>
           <a className="nav-item" href="#" onClick={() => setShowModal(true)}>
             <span className="nav-icon">＋</span> New Request
+            <kbd className="kbd">N</kbd>
           </a>
         </nav>
         <div className="sidebar-user">
@@ -94,6 +108,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
           <div className="topbar-actions">
             <button className="btn-filter" onClick={() => setShowFilter(true)}>
               ⚙ Filter
+              <kbd className="kbd">F</kbd>
               {/* show a dot if any filter is active */}
               {(filters.status !== "All" || filters.dateFrom || filters.dateTo) && (
                 <span className="filter-dot" />
@@ -102,6 +117,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
 
             <button className="btn-primary" onClick={() => setShowModal(true)}>
               <span>＋</span> New Request
+              <kbd className="kbd">N</kbd>
             </button>
           </div>
           

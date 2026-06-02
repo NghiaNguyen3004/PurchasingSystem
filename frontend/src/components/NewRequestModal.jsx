@@ -1,8 +1,11 @@
 import '../styles/requestModal.css';
 import { useState, useEffect } from "react";
 import {DEPARTMENTS} from "../constants/department.js"
+import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 
 export default function NewRequestModal({ onClose, onSubmit }) {
+
+
     function generateBudgetCode(department) {
         const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
         const year = new Date().getFullYear()
@@ -56,6 +59,11 @@ export default function NewRequestModal({ onClose, onSubmit }) {
         }
         onClose()
     }
+
+    useKeyboardShortcuts([
+        { key: "Escape", fn: handleDone },
+    ]);
+    
     return (
         <div className="modal-overlay" onClick={onClose}>
         <div className="modal-card" onClick={(e) => e.stopPropagation()}>
