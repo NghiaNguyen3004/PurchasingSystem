@@ -1,47 +1,26 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import RequesterDashboard from "./pages/requesterDashboard";
+import { useAuth } from "./context/authContext.jsx";
 // import ApproverDashboard from "./ApproverDashboard"; // coming next
- 
-function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
-  }
-}
+
  
 export default function App() {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const [user, setUser] = useState(() => {
-    const t = localStorage.getItem("token");
-    return t ? parseJwt(t) : null;
-  });
- 
-  const handleLogin = (newToken) => {
-    localStorage.setItem("token", newToken);
-    setToken(newToken);
-    setUser(parseJwt(newToken));
-  };
- 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setUser(null);
-  };
+  const { token, user, login, logout } = useAuth();
+
  
   if (!token || !user) {
-    return <Login onLogin={handleLogin} />;
+    return <Login onLogin={login} />;
   }
  
   if (user.userType === "Requester") {
-    return <RequesterDashboard token={token} user={user} onLogout={handleLogout} />;
+    return <RequesterDashboard token={token} user={user} onLogout={logout} />;
   }
  
   if (user.userType === "Approver") {
-    // return <ApproverDashboard token={token} user={user} onLogout={handleLogout} />;
+    // return <ApproverDashboard token={token} user={user} onLogout={logout} />;
     return <div style={{ color: "#fff", padding: 40 }}>Approver dashboard coming soon...</div>;
   }
  
-  return <Login onLogin={handleLogin} />;
+  return <Login onLogin={login} />;
 }

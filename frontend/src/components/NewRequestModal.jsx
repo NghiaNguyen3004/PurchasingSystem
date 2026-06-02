@@ -62,8 +62,8 @@ export default function NewRequestModal({ onClose, onSubmit }) {
 
     useKeyboardShortcuts([
         { key: "Escape", fn: handleDone },
-        { key: "Enter", fn: handleSaveAndContinue },
-    ]);
+        
+    ]); 
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -75,7 +75,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
 
             {savedCount > 0 && (
             <div className="saved-indicator">
-                ✓ {savedCount} request{savedCount > 1 ? "s" : ""} saved
+                {savedCount} request{savedCount > 1 ? "s" : ""} saved ✓ 
             </div>
             )}
 
