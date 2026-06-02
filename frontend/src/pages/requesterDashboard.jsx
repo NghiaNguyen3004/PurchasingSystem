@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import "../styles/requesterDashboard.css";
 import "../styles/filterModal.css";
 import { getMyRequests, submitRequest} from "../services/api.js";
-import NewRequestModal from "../utils/NewRequestModal.jsx";
-import FiltersModal from "../utils/FiltersModal.jsx";
+import NewRequestModal from "../components/NewRequestModal.jsx";
+import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
 
 export default function RequesterDashboard({ token, user, onLogout }) {

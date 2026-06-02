@@ -1,5 +1,5 @@
 import {useState} from "react"
-import "../styles/requesterDashboard.css"
+import "../styles/requestModal.css"
 import "../styles/filterModal.css"
 
 export default function FiltersModal({ filters, onApply, onClose }) {

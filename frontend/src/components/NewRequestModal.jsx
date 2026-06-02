@@ -1,6 +1,9 @@
-import '../styles/requesterDashboard.css'
+import '../styles/requestModal.css';
 import { useState, useEffect } from "react";
+import {DEPARTMENTS} from "../constants/department.js"
+
 export default function NewRequestModal({ onClose, onSubmit }) {
+    const [savedCount, setSavedCount] = useState(0);
 
     function generateBudgetCode(department) {
         const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
@@ -50,24 +53,19 @@ export default function NewRequestModal({ onClose, onSubmit }) {
                     value={form.item_name} onChange={e => setForm({ ...form, item_name: e.target.value })} />
                 </div>
                 <div className="field-group">
-                <label className="field-label">Department</label>
-                <input
-                    className="field-input"
-                    placeholder="e.g. IT, HR, Finance"
-                    value={form.department}
-                    onChange={handleDepartmentChange}
-                    required
-                />
-                </div>
-                {/* <div className="field-group">
-                    <label className="field-label">Budget Code</label>
-                    <input
-                    className="field-input"
-                    value={form.budget_code}
-                    readOnly 
-                    style={{ opacity: 0.6, cursor: "not-allowed" }}
-                />
-                </div> */}
+                    <label className="field-label">Department</label>
+                    <select
+                        className="field-input field-select"
+                        value={form.department}
+                        onChange={handleDepartmentChange}
+                        required
+                    >
+                        <option value="">Select department...</option>
+                        {DEPARTMENTS.map(d => (
+                        <option key={d} value={d}>{d}</option>
+                        ))}
+                    </select>
+                    </div>
             </div>
             <div className="form-row">
                 <div className="field-group">

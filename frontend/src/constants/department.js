@@ -1,0 +1,20 @@
+export const DEPARTMENTS = [
+    "IT",
+    "HR",
+    "Finance",
+    "Marketing",
+    "Operations",
+    "Sales",
+    "Legal",
+    "Admin",
+    "R&D",
+    "Customer Service",
+    "Procurement",
+    "Logistics",
+    "Facilities",
+    "Quality Assurance",
+    "Compliance",
+    "Public Relations",
+    "Executive",
+    "General"
+];
