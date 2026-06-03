@@ -4,12 +4,12 @@ export function useKeyboardShortcuts(shortcuts) {
   useEffect(() => {
     const handleKeyDown = (e) => {
       const tag = e.target.tagName.toLowerCase()
-      const isFormField = ["input", "textarea", "select"].includes(tag)
+      if (["input", "textarea", "select"].includes(tag)) return
 
-      shortcuts.forEach(({ key, fn }) => {
-        if (e.key === key && (!isFormField)) {
+      shortcuts.forEach(({ key, shift, fn }) => {
+        const shiftMatch = shift ? e.shiftKey:true
+        if (e.key === key && shiftMatch)
           fn()
-        }
       })
     }
 

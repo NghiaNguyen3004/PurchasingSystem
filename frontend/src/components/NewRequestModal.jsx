@@ -2,9 +2,10 @@ import '../styles/requestModal.css';
 import { useState, useEffect } from "react";
 import {DEPARTMENTS} from "../constants/department.js"
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
+import { useFocusTrap } from '../hook/useFocusTrap.js';
 
 export default function NewRequestModal({ onClose, onSubmit }) {
-
+    const trapRef = useFocusTrap(true)
 
     function generateBudgetCode(department) {
         const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
@@ -67,7 +68,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-card" ref={trapRef} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
             <h2 className="modal-title">New Purchase Request</h2>
             <button className="modal-close" onClick={onClose}>✕</button>

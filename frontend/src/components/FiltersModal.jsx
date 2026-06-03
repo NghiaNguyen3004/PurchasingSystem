@@ -5,9 +5,11 @@ import "../styles/requestModal.css"
 import "../styles/filterModal.css"
 
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
+import { useFocusTrap } from "../hook/useFocusTrap.js"
 
 export default function FiltersModal({ filters, onApply, onClose }) {
     const [temp, setTemp] = useState(filters)
+    const trapRef = useFocusTrap(true)
 
     const handleApply = () => {
         onApply(temp)
@@ -24,12 +26,12 @@ export default function FiltersModal({ filters, onApply, onClose }) {
     useKeyboardShortcuts([
         { key: "Enter", fn: handleApply },
         { key: "Escape", fn: onClose },
-        { key:"c", fn: handleClear}
+        { key: "c", fn: handleClear}
     ]);
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-card filter-modal-card" onClick={e => e.stopPropagation()}>
+        <div className="modal-card filter-modal-card" ref = {trapRef} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
             <h2 className="modal-title">Filter Requests</h2>
             <button className="modal-close" onClick={onClose}>✕</button>
