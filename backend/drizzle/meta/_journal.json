@@ -8,6 +8,13 @@
       "when": 1780297674430,
       "tag": "0000_faithful_namora",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780453250816,
+      "tag": "0001_tranquil_captain_flint",
+      "breakpoints": true
     }
   ]
 }

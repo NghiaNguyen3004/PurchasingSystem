@@ -6,6 +6,6 @@ const requestRouter = express.Router()
 
 requestRouter.post('/', authenticateToken, submitRequest)
 requestRouter.get('/mine', authenticateToken, getUserRequests)
-requestRouter.patch('/:requestId/approve', authenticateToken, checkRole, approveRequestController)
-requestRouter.patch('/:requestId/reject', authenticateToken, checkRole, rejectRequestController)
+requestRouter.patch('/:requestId/approve', authenticateToken, checkRole("Approver"), approveRequestController)
+requestRouter.patch('/:requestId/reject', authenticateToken, checkRole("Approver"), rejectRequestController)
 export default requestRouter

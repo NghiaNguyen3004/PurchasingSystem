@@ -13,7 +13,7 @@ export const users = pgTable('users', {
     },
     // Constraint
     (users)=>[
-        check('user_type_check', sql`${users.user_type} in ('Requester', 'Approver')`)
+        check('user_type_check', sql`${users.user_type} in ('Requester', 'Approver','Admin')`)
     ]
 )
 
