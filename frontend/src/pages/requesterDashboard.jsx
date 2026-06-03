@@ -8,6 +8,8 @@ import NewRequestModal from "../components/NewRequestModal.jsx";
 import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
 import SideBar from "../components/sideBar.jsx";
+import StatsGrid from "../components/statsGrid.jsx";
+import PageTable from "../components/pageTable.jsx";
 
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useRequest } from "../hook/useRequest.js";
@@ -87,35 +89,20 @@ export default function RequesterDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="stats-grid">
-          {[
+        <StatsGrid stats={[
             { label: "Total Requests", value: stats.total, accent: "#6366f1" },
             { label: "Pending Review", value: stats.pending, accent: "#f59e0b" },
             { label: "Approved", value: stats.approved, accent: "#22c55e" },
             { label: "Rejected", value: stats.rejected, accent: "#ef4444" },
-          ].map((s) => (
-            <div className="stat-card" key={s.label} style={{ "--accent": s.accent }}>
-              <div className="stat-value" style={{ color: s.accent }}>{s.value}</div>
-              <div className="stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
+          ]} />
 
         {/* Table */}
-        <div className="table-card">
-          <div className="table-header">
-            <h2 className="table-title">Request History</h2>
-          </div>
-          {loading ? (
-            <div className="table-empty">Loading...</div>
-          ) : requests.length === 0 ? (
-            <div className="table-empty">
-              <div className="empty-icon">◈</div>
-              <p>No requests yet. Create your first one!</p>
-            </div>
-          ) : (
-            <table className="req-table">
-              <thead>
+        <PageTable
+          title="Request History"
+          loading={loading}
+          empty={filteredRequests.length === 0 ? "No requests found." : null}
+        > 
+        <thead>
                 <tr>
                   <th>Item</th>
                   <th>Qty</th>
@@ -125,24 +112,22 @@ export default function RequesterDashboard() {
                   <th>Status</th>
                   <th>Date</th>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredRequests.map((r) => (
-                  <tr key={r.id}>
-                    <td className="td-item">{r.item_name}</td>
-                    <td>{r.quantity}</td>
-                    <td>${Number(r.price_per_unit).toLocaleString()}</td>
-                    <td className="td-total">${(r.quantity * r.price_per_unit).toLocaleString()}</td>
-                    <td><span className="budget-tag">{r.budget_code}</span></td>
-                    <td><StatusBadge status={r.status} /></td>
-                    <td className="td-date">{new Date(r.created_at).toLocaleDateString()}</td>
-                  </tr>
-  
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        </thead>
+        <tbody>
+          {filteredRequests.map((r) => (
+            <tr key={r.id}>
+              <td className="td-item">{r.item_name}</td>
+              <td>{r.quantity}</td>
+              <td>${Number(r.price_per_unit).toLocaleString()}</td>
+              <td className="td-total">${(r.quantity * r.price_per_unit).toLocaleString()}</td>
+              <td><span className="budget-tag">{r.budget_code}</span></td>
+              <td><StatusBadge status={r.status} /></td>
+              <td className="td-date">{new Date(r.created_at).toLocaleDateString()}</td>
+            </tr>
+
+          ))}
+        </tbody>
+        </PageTable>
       </main>
 
       {showModal && <NewRequestModal onClose={() => setShowModal(false)} onSubmit={submitNewRequest} />}
