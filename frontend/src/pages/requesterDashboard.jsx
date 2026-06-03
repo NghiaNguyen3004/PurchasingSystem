@@ -11,8 +11,10 @@ import StatusBadge from "../components/statusBadge.jsx";
 import SideBar from "../components/sideBar.jsx";
 import StatsGrid from "../components/statsGrid.jsx";
 import PageTable from "../components/pageTable.jsx";
+import RequestRow from "../components/RequestRow.jsx";
 
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
+import {useTableNavigation} from "../hook/useTableNavigation.js"
 import { useRequest } from "../hook/useRequest.js";
 import { useAuth } from "../context/authContext.jsx";
 
@@ -43,6 +45,9 @@ export default function RequesterDashboard() {
 
       return statusMatch && dateMatch
   });
+  console.log("Filtered Requests:", filteredRequests)
+
+  const {focusedIndex, setFocusedIndex} = useTableNavigation(filteredRequests)
 
   const stats = {
     total: requests.length,
@@ -58,6 +63,7 @@ export default function RequesterDashboard() {
     { key: "N", fn: () => setShowModal(true) },
     { key: "f", fn: () => setShowFilter(true) },
     { key: "F", fn: () => setShowFilter(true) },
+    { key: "ArrowDown", fn:() => setFocusedIndex(0) },
   ])
 
   return (
@@ -115,17 +121,14 @@ export default function RequesterDashboard() {
                 </tr>
         </thead>
         <tbody>
-          {filteredRequests.map((r) => (
-            <tr key={r.id}>
-              <td className="td-item">{r.item_name}</td>
-              <td>{r.quantity}</td>
-              <td>${Number(r.price_per_unit).toLocaleString()}</td>
-              <td className="td-total">${(r.quantity * r.price_per_unit).toLocaleString()}</td>
-              <td><span className="budget-tag">{r.budget_code}</span></td>
-              <td><StatusBadge status={r.status} /></td>
-              <td className="td-date">{new Date(r.created_at).toLocaleDateString()}</td>
-            </tr>
-
+          {filteredRequests.map((r, index) => (
+            <RequestRow 
+              key={r.id}
+              request={r}
+              index={index}
+              focusedIndex={focusedIndex}
+              setFocusedIndex={setFocusedIndex}
+            />
           ))}
         </tbody>
         </PageTable>

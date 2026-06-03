@@ -112,3 +112,12 @@
 
     .btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
+    .row-focused {
+    outline: 2px solid rgba(99,102,241,0.5);
+    outline-offset: -2px;
+    background: rgba(99,102,241,0.05) !important;
+    }
+
+    tr:focus {
+    outline: none; /* we handle it ourselves above */
+    }
