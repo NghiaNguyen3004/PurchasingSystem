@@ -43,11 +43,15 @@ export default function SideBar({onAction}){
                 ))}
             </nav>
             <div className="sidebar-user">
-                <div className="user-avatar">{user?.username?.[0]?.toUpperCase() || "U"}</div>
-                    <div className="user-info">
-                        <div className="user-name">{user?.username}</div>
-                            <div className="user-role">{user?.department}</div>
+                <div className={`avatar ${role === "Admin" ? "admin" : ""}`}>
+                        {user?.username?.[0]?.toUpperCase()}
+                </div>
+                <div className="user-info">
+                    <div className="user-name">{user?.username}</div>
+                    <div className="user-role" style={{ color: roleColors[role] }}>
+                        {role}
                     </div>
+                </div>
                 <button className="logout-btn" onClick={logout} title="Logout">⏻</button>
             </div>
       </aside>

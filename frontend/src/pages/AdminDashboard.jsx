@@ -3,27 +3,11 @@ import { useAuth } from "../context/authContext.jsx"
 import { DEPARTMENTS } from "../constants/department.js"
 import { getAllUsers, deleteUser, changeUserRole, registerUser } from "../services/api.js"
 import "../styles/adminDashboard.css"
+import "../styles/shared.css"
+import SideBar from "../components/sideBar.jsx"
 
 const USER_TYPES = ["Requester", "Approver", "Admin"]
 
-const TYPE_COLORS = {
-  Requester: { bg: "rgba(99,102,241,0.12)", text: "#818cf8" },
-  Approver:  { bg: "rgba(34,197,94,0.12)",  text: "#4ade80" },
-  Admin:     { bg: "rgba(239,68,68,0.12)",  text: "#f87171" },
-}
-
-function TypeBadge({ type }) {
-  const c = TYPE_COLORS[type] || TYPE_COLORS.Requester
-  return (
-    <span style={{
-      background: c.bg, color: c.text,
-      padding: "3px 10px", borderRadius: 20,
-      fontSize: 12, fontWeight: 500,
-    }}>
-      {type}
-    </span>
-  )
-}
 
 export default function AdminDashboard() {
   const { token, user, logout } = useAuth()
@@ -42,6 +26,15 @@ export default function AdminDashboard() {
   const [editingRoleId, setEditingRoleId] = useState(null)
   const [roleLoading, setRoleLoading] = useState(null)
   const [deleteLoading, setDeleteLoading] = useState(null)
+
+
+function TypeBadge({type}){
+    return (
+      <span className={`type-badge ${type.toLowerCase()}`}>
+        {type}
+      </span>
+    )
+  }
 
   const fetchUsers = async () => {
     setLoadingUsers(true)
@@ -102,25 +95,7 @@ export default function AdminDashboard() {
   return (
     <div className="dash-root">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span className="logo-icon">⬡</span>
-          <span className="logo-text">ProcureFlow</span>
-        </div>
-        <nav className="sidebar-nav">
-          <a className="nav-item nav-active" href="#">
-            <span className="nav-icon">◈</span> User Management
-          </a>
-        </nav>
-        <div className="sidebar-user">
-          <div className="user-avatar admin-avatar">{user?.username?.[0]?.toUpperCase()}</div>
-          <div className="user-info">
-            <div className="user-name">{user?.username}</div>
-            <div className="user-role" style={{ color: "#f87171" }}>Admin</div>
-          </div>
-          <button className="logout-btn" onClick={logout} title="Logout">⏻</button>
-        </div>
-      </aside>
+      <SideBar/>
 
       {/* Main */}
       <main className="dash-main">

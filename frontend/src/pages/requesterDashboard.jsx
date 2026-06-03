@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import "../styles/requesterDashboard.css";
+import "../styles/shared.css";
 import "../styles/filterModal.css";
 import "../styles/keyboardShortcuts.css"
 

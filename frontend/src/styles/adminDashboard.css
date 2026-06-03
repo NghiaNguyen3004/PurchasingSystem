@@ -1,3 +1,9 @@
+:root{
+  --requester-color: rgba(99,102,241,0.12);
+  --approver-color: rgba(34,197,94,0.12);
+  --admin-color: rgba(239,68,68,0.12);
+}
+
 .admin-badge {
   display: inline-flex;
   align-items: center;
@@ -24,9 +30,6 @@
   50% { opacity: 0.4; }
 }
 
-.admin-avatar {
-  background: linear-gradient(135deg, #ef4444, #f97316) !important;
-}
 
 /* Layout */
 .admin-layout {
@@ -165,3 +168,27 @@ tr:hover .edit-role-btn { opacity: 1; }
 tr:hover .delete-btn { opacity: 1; }
 .delete-btn:hover { background: rgba(239,68,68,0.2); }
 .delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+
+.type-badge{
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+  }
+
+.type-badge.requester{
+      background: var(--requester-color);
+      color: #818cf8;
+      
+  }
+
+.type-badge.approver{
+      background: var(--approver-color);
+      color: #22c55e;
+  }
+
+.type-badge.admin{
+      background: var(--admin-color);
+      color: #f87171;
+  }
