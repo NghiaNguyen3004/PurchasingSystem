@@ -17,7 +17,7 @@ import { useAuth } from "../context/authContext.jsx";
 
 
 export default function RequesterDashboard() {
-  const { token, user, logout } = useAuth();
+  const { token, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -100,7 +100,7 @@ export default function RequesterDashboard() {
         <PageTable
           title="Request History"
           loading={loading}
-          empty={filteredRequests.length === 0 ? "No requests found." : null}
+          empty={filteredRequests.length === 0 ? "No recent requests found." : null}
         > 
         <thead>
                 <tr>
