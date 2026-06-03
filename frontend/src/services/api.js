@@ -41,6 +41,19 @@ export const getAllUsers = async (token) => {
     return data.users;
 }
 
+export const editingRequest = async (token, requestId, form) => {
+    const res = await authFetch(`${SERVER_URL}/request/${requestId}`, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+            Authorization: `Bearer ${token}` },
+        body: JSON.stringify(form),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to edit request");
+    return data;
+}
+
 export const changeUserRole = async(token, userId, newRole) =>{
     const res = await authFetch(`${SERVER_URL}/admin/users/${userId}/role`, {
         method: "PATCH",

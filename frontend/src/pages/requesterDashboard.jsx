@@ -31,6 +31,7 @@ export default function RequesterDashboard() {
     dateFrom: "",
     dateTo:"", 
   });
+  const[editingRequest, setEditingRequest] = useState(null)
 
   const filteredRequests = requests.filter(r => {
       const statusMatch = filters.status === "All" || r.status === filters.status
@@ -45,7 +46,6 @@ export default function RequesterDashboard() {
 
       return statusMatch && dateMatch
   });
-  console.log("Filtered Requests:", filteredRequests)
 
   const {focusedIndex, setFocusedIndex} = useTableNavigation(filteredRequests)
 
@@ -128,13 +128,24 @@ export default function RequesterDashboard() {
               index={index}
               focusedIndex={focusedIndex}
               setFocusedIndex={setFocusedIndex}
+              onEdit ={setEditingRequest}
             />
+            
           ))}
         </tbody>
         </PageTable>
       </main>
 
-      {showModal && <NewRequestModal onClose={() => setShowModal(false)} onSubmit={submitNewRequest} />}
+      {(showModal || editingRequest) && (
+      <NewRequestModal
+          onClose={() => { setShowModal(false); setEditingRequest(null) }}
+          onSubmit={editingRequest
+          ? (form) => edit(editingRequest.id, form)
+          : submitNewRequest
+        }
+        initialData={editingRequest}
+        />
+    )}
       {showFilter && <FiltersModal filters={filters} onApply={setFilters} onClose={() => setShowFilter(false)}/>}
     </div>
   );

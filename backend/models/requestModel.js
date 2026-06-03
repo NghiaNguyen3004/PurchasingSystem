@@ -1,6 +1,18 @@
 import db from '../models/db/index.js'
 import {requests} from '../models/db/schema.js'
 import {eq} from 'drizzle-orm'
+
+//Model functions for requester actions
+export const checkExistingRequest = async (requestId) => {
+    try {
+        const [existingRequest] = await db.select().from(requests).where(eq(requests.id, requestId))
+        return existingRequest
+    } catch (error) {
+        console.error('Error checking existing request:', error)
+        throw error
+    }
+}
+
 export const createRequest = async (requestData) => {
     try {
         const [newRequest] = await db.insert(requests).values(requestData).returning()
@@ -21,6 +33,18 @@ export const getRequestsByUserId = async (userId) => {
     }
 }
 
+export const editRequest = async (requestId, updatedData) => {
+    try {
+        const [updatedRequest] = await db.update(requests).set(updatedData).where(eq(requests.id, requestId)).returning()
+        return updatedRequest
+    } catch (error) {
+        console.error('Error editing request:', error)
+        throw error
+    }
+}
+
+
+//Model functions for approver actions
 export const approveRequest = async (requestId) => {
     try {
         const updatedRequest = await db.update(requests).set({status: "Approved"}).where(eq(requests.id, requestId)).returning()

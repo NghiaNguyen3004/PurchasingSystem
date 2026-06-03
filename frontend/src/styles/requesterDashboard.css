@@ -121,3 +121,17 @@
     tr:focus {
     outline: none; /* we handle it ourselves above */
     }
+    .edit-btn {
+        background: rgba(99,102,241,0.08);
+        border: 1px solid rgba(99,102,241,0.15);
+        border-radius: 6px;
+        color: #818cf8;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+        transition: all 0.15s;
+        opacity: 0;
+    }
+
+    tr:hover .edit-btn { opacity: 1; }
+    .edit-btn:hover { background: rgba(99,102,241,0.2); }

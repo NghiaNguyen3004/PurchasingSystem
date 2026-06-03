@@ -4,8 +4,9 @@ import {DEPARTMENTS} from "../constants/department.js"
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useFocusTrap } from '../hook/useFocusTrap.js';
 
-export default function NewRequestModal({ onClose, onSubmit }) {
+export default function NewRequestModal({ onClose, onSubmit, initialData = null }) {
     const trapRef = useFocusTrap(true)
+    const isEditing = initialData !== null
 
     function generateBudgetCode(department) {
         const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
@@ -18,7 +19,15 @@ export default function NewRequestModal({ onClose, onSubmit }) {
     department: "", budget_code: "", reason: "",
     }
 
-    const [form, setForm] = useState({...emptyForm});
+    const [form, setForm] = useState(
+    initialData ? {
+      item_name: initialData.item_name,
+      quantity: initialData.quantity,
+      price_per_unit: initialData.price_per_unit,
+      department: initialData.department,
+      budget_code: initialData.budget_code,
+      reason: initialData.reason,
+    } : {...emptyForm});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [savedCount, setSavedCount] = useState(0);
@@ -34,9 +43,14 @@ export default function NewRequestModal({ onClose, onSubmit }) {
         setLoading(true)
         setError("")
         try {
-        await onSubmit(form)
-        setSavedCount(c => c + 1)
-        setForm({ ...emptyForm })  // reset for next request
+            await onSubmit(form)
+            if (isEditing){ 
+                onClose()
+            } else{
+                setSavedCount(c => c + 1)
+                setForm({ ...emptyForm })  // reset for next request
+            }
+            
         } catch (err) {
         setError(err.message)
         } finally {
@@ -70,7 +84,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
         <div className="modal-overlay" onClick={onClose}>
         <div className="modal-card" ref={trapRef} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-            <h2 className="modal-title">New Purchase Request</h2>
+            <h2 className="modal-title">{isEditing ? "Edit" : "New"} Purchase Request</h2>
             <button className="modal-close" onClick={onClose}>✕</button>
             </div>
 
@@ -125,7 +139,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
             <div className="modal-actions">
                 <button type="button" className="btn-secondary" onClick={handleDone}>Done</button>
                 <button type="submit" className="btn-save-continue" disabled={loading}>
-                    {loading ? <span className="btn-spinner" /> : <>Save & Add More <kbd className="kbd-dark">↵</kbd></>}
+                    {loading ? <span className="btn-spinner" /> : isEditing ? <>Save Changes</> : <>Save & Add More</>}<kbd className="kbd-dark">↵</kbd>
                 </button>
             </div>
             </form>

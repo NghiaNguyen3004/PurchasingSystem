@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getMyRequests, submitRequest } from '../services/api.js';
+import { getMyRequests, submitRequest, editingRequest } from '../services/api.js';
 
 export function useRequest(token) {
     const [requests, setRequests] = useState([]);
@@ -28,6 +28,11 @@ export function useRequest(token) {
         await submitRequest(token, form);
         fetchRequests(); // refresh list after submission
     }
+    const edit = async(requestId, form) => {
+        setError("");
+        await editingRequest(token, requestId, form);
+        fetchRequests(); // refresh list after editing
+    }
 
-    return { requests, loading, fetchRequests, submitNewRequest };
+    return { requests, loading, fetchRequests, submitNewRequest, edit };
 }
