@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "../styles/login.css";
-import { LoginUser } from "../services/api.js";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000"; // from .env file or default to ""
 const roles = ["Requester", "Approver"];
 
@@ -10,12 +9,18 @@ export default function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (username, password) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError("");
     try {
-      const data = await LoginUser(username, password);
-      console.log("Login successful:", data.token);
+      const res = await fetch(`${SERVER_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, user_type: activeTab }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
       onLogin(data.token, activeTab);
     } catch (err) {
       setError(err.message);
@@ -48,7 +53,7 @@ export default function Login({ onLogin }) {
           ))}
         </div>
 
-        <form className="login-form" onSubmit={(e) => handleSubmit(form.username, form.password)}>
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="field-group">
             <label className="field-label">Username</label>
             <input
