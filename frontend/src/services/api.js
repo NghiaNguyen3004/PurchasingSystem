@@ -10,6 +10,7 @@ const authFetch = async (URL, options = {}) => {
     return response;
 }
 
+
 export const getMyRequests = async (token) => {
     const allRequests = await authFetch(`${SERVER_URL}/request/mine`, {
         headers: { Authorization: `Bearer ${token}` },
