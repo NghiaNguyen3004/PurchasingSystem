@@ -45,3 +45,14 @@ export const rejectRequestController = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+export const getPendingRequestsController = async (req, res) => {
+    try {
+        const pendingRequests = await getPendingRequests()
+        res.status(200).json(pendingRequests)
+    }
+    catch (error) {
+        console.error('Error fetching pending requests:', error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}

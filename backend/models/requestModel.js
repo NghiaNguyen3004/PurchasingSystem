@@ -31,6 +31,16 @@ export const approveRequest = async (requestId) => {
     }
 }
 
+export const getPendingRequests = async()=>{
+    try {
+        const pendingRequests = await db.select().from(requests).where(eq(requests.status, "Pending"))
+        return pendingRequests
+    } catch (error) {
+        console.error('Error fetching pending requests:', error)
+        throw error
+    }
+}
+
 export const rejectRequest = async (requestId) => {
     try {
         const updatedRequest = await db.update(requests).set({status: "Rejected"}).where(eq(requests.id, requestId)).returning()
