@@ -1,4 +1,4 @@
-import {getAllUsers} from '../models/adminModel.js'
+import {getAllUsers, deleteUserById, updateUserRole} from '../models/adminModel.js'
 
 export const getAllUsersController = async (req, res) => {
     try {

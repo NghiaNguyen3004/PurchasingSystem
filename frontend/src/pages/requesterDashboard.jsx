@@ -9,9 +9,11 @@ import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useRequest } from "../hook/useRequest.js";
+import { useAuth } from "../context/authContext.jsx";
 
 
-export default function RequesterDashboard({ token, user, onLogout }) {
+export default function RequesterDashboard() {
+  const { token, user, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -76,7 +78,7 @@ export default function RequesterDashboard({ token, user, onLogout }) {
             <div className="user-name">{user?.username}</div>
             <div className="user-role">{user?.department}</div>
           </div>
-          <button className="logout-btn" onClick={onLogout} title="Logout">⏻</button>
+          <button className="logout-btn" onClick={logout} title="Logout">⏻</button>
         </div>
       </aside>
 

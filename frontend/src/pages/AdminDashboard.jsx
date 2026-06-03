@@ -1,47 +1,107 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../context/authContext.jsx"
 import { DEPARTMENTS } from "../constants/department.js"
-
+import { getAllUsers, deleteUser, changeUserRole, registerUser } from "../services/api.js"
 import "../styles/adminDashboard.css"
 
 const USER_TYPES = ["Requester", "Approver", "Admin"]
 
+const TYPE_COLORS = {
+  Requester: { bg: "rgba(99,102,241,0.12)", text: "#818cf8" },
+  Approver:  { bg: "rgba(34,197,94,0.12)",  text: "#4ade80" },
+  Admin:     { bg: "rgba(239,68,68,0.12)",  text: "#f87171" },
+}
+
+function TypeBadge({ type }) {
+  const c = TYPE_COLORS[type] || TYPE_COLORS.Requester
+  return (
+    <span style={{
+      background: c.bg, color: c.text,
+      padding: "3px 10px", borderRadius: 20,
+      fontSize: 12, fontWeight: 500,
+    }}>
+      {type}
+    </span>
+  )
+}
+
 export default function AdminDashboard() {
   const { token, user, logout } = useAuth()
-  const [form, setForm] = useState({
-    username: "", password: "", user_type: "", department: ""
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-    setSuccess("")
+  // users list
+  const [users, setUsers] = useState([])
+  const [loadingUsers, setLoadingUsers] = useState(true)
+
+  // register form
+  const [form, setForm] = useState({ username: "", password: "", user_type: "", department: "" })
+  const [formLoading, setFormLoading] = useState(false)
+  const [formError, setFormError] = useState("")
+  const [formSuccess, setFormSuccess] = useState("")
+
+  // inline role editing
+  const [editingRoleId, setEditingRoleId] = useState(null)
+  const [roleLoading, setRoleLoading] = useState(null)
+  const [deleteLoading, setDeleteLoading] = useState(null)
+
+  const fetchUsers = async () => {
+    setLoadingUsers(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/admin/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message)
-      setSuccess(`User "${data.user.username}" created successfully!`)
-      setForm({ username: "", password: "", user_type: "", department: "" })
-    } catch (err) {
-      setError(err.message)
+      const data = await getAllUsers(token)
+      setUsers(data)
     } finally {
-      setLoading(false)
+      setLoadingUsers(false)
+    }
+  }
+
+  useEffect(() => { fetchUsers() }, [token])
+
+  const handleRegister = async (e) => {
+    e.preventDefault()
+    setFormLoading(true)
+    setFormError("")
+    setFormSuccess("")
+    try {
+      const data = await registerUser(token, form)
+      console.log("Registered user:", data)
+      setFormSuccess(`"${form.username}" registered successfully`)
+      setForm({ username: "", password: "", user_type: "", department: "" })
+      fetchUsers()
+    } catch (err) {
+      setFormError(err.message)
+    } finally {
+      setFormLoading(false)
+    }
+  }
+
+  const handleDelete = async (id, username) => {
+    if (!confirm(`Delete user "${username}"? This cannot be undone.`)) return
+    setDeleteLoading(id)
+    try {
+      await deleteUser(token, id)
+      fetchUsers()
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setDeleteLoading(null)
+    }
+  }
+
+  const handleRoleChange = async (id, newRole) => {
+    setRoleLoading(id)
+    try {
+      await changeUserRole(token, id, newRole)
+      setEditingRoleId(null)
+      fetchUsers()
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setRoleLoading(null)
     }
   }
 
   return (
     <div className="dash-root">
+      {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <span className="logo-icon">⬡</span>
@@ -49,43 +109,53 @@ export default function AdminDashboard() {
         </div>
         <nav className="sidebar-nav">
           <a className="nav-item nav-active" href="#">
-            <span className="nav-icon">▦</span> User Management
+            <span className="nav-icon">◈</span> User Management
           </a>
         </nav>
         <div className="sidebar-user">
-          <div className="user-avatar">{user?.username?.[0]?.toUpperCase()}</div>
+          <div className="user-avatar admin-avatar">{user?.username?.[0]?.toUpperCase()}</div>
           <div className="user-info">
             <div className="user-name">{user?.username}</div>
-            <div className="user-role">Admin</div>
+            <div className="user-role" style={{ color: "#f87171" }}>Admin</div>
           </div>
           <button className="logout-btn" onClick={logout} title="Logout">⏻</button>
         </div>
       </aside>
 
+      {/* Main */}
       <main className="dash-main">
         <div className="dash-topbar">
           <div>
             <h1 className="dash-title">User Management</h1>
-            <p className="dash-sub">Register new users into the system</p>
+            <p className="dash-sub">Register, manage roles, and remove users</p>
+          </div>
+          <div className="admin-badge">
+            <span className="admin-badge-dot" />
+            Admin Console
           </div>
         </div>
 
-        <div className="register-card">
-          <h2 className="table-title" style={{ marginBottom: 20 }}>Register New User</h2>
-          <form onSubmit={handleSubmit} className="modal-form">
-            <div className="form-row">
+        <div className="admin-layout">
+          {/* Register Panel */}
+          <div className="admin-panel">
+            <div className="panel-header">
+              <h2 className="panel-title">Register New User</h2>
+              <p className="panel-sub">Add a new user to the system</p>
+            </div>
+
+            <form onSubmit={handleRegister} className="admin-form">
               <div className="field-group">
                 <label className="field-label">Username</label>
                 <input className="field-input" placeholder="e.g. john_doe" required
                   value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
               </div>
+
               <div className="field-group">
                 <label className="field-label">Password</label>
                 <input className="field-input" type="password" placeholder="••••••••" required
                   value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
               </div>
-            </div>
-            <div className="form-row">
+
               <div className="field-group">
                 <label className="field-label">User Type</label>
                 <select className="field-input field-select" required
@@ -94,6 +164,7 @@ export default function AdminDashboard() {
                   {USER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
+
               <div className="field-group">
                 <label className="field-label">Department</label>
                 <select className="field-input field-select" required
@@ -102,19 +173,93 @@ export default function AdminDashboard() {
                   {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
-            </div>
 
-            {error && <div className="form-error">{error}</div>}
-            {success && (
-              <div className="form-success">{success}</div>
-            )}
+              {formError && <div className="form-error">{formError}</div>}
+              {formSuccess && <div className="form-success">{formSuccess}</div>}
 
-            <div className="modal-actions">
-              <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? <span className="btn-spinner" /> : "Register User"}
+              <button type="submit" className="btn-primary btn-full" disabled={formLoading}>
+                {formLoading ? <span className="btn-spinner" /> : "Register User"}
               </button>
+            </form>
+          </div>
+
+          {/* Users List Panel */}
+          <div className="admin-panel panel-wide">
+            <div className="panel-header">
+              <h2 className="panel-title">All Users</h2>
+              <p className="panel-sub">{users.length} user{users.length !== 1 ? "s" : ""} in the system</p>
             </div>
-          </form>
+
+            {loadingUsers ? (
+              <div className="table-empty">Loading...</div>
+            ) : users.length === 0 ? (
+              <div className="table-empty">No users found.</div>
+            ) : (
+              <table className="req-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Department</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map(u => (
+                    <tr key={u.id} className={u.id === user?.userId ? "current-user-row" : ""}>
+                      <td className="td-item">
+                        {u.username}
+                        {u.id === user?.userId && <span className="you-badge">you</span>}
+                      </td>
+                      <td>{u.department}</td>
+                      <td>
+                        {editingRoleId === u.id ? (
+                          <div className="role-edit">
+                            <select
+                              className="field-input role-select"
+                              defaultValue={u.user_type}
+                              onChange={e => handleRoleChange(u.id, e.target.value)}
+                              disabled={roleLoading === u.id}
+                              autoFocus
+                            >
+                              {USER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                            <button className="cancel-edit-btn"
+                              onClick={() => setEditingRoleId(null)}>✕</button>
+                          </div>
+                        ) : (
+                          <div className="role-display">
+                            <TypeBadge type={u.user_type} />
+                            {u.id !== user?.userId && (
+                              <button className="edit-role-btn"
+                                onClick={() => setEditingRoleId(u.id)}>
+                                ✎
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="td-date">
+                        {new Date(u.created_at).toLocaleDateString()}
+                      </td>
+                      <td>
+                        {u.id !== user?.userId && (
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDelete(u.id, u.username)}
+                            disabled={deleteLoading === u.id}
+                          >
+                            {deleteLoading === u.id ? "..." : "✕"}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </main>
     </div>
