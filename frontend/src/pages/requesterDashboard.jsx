@@ -7,6 +7,8 @@ import "../styles/keyboardShortcuts.css"
 import NewRequestModal from "../components/NewRequestModal.jsx";
 import FiltersModal from "../components/FiltersModal.jsx";
 import StatusBadge from "../components/statusBadge.jsx";
+import SideBar from "../components/sideBar.jsx";
+
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useRequest } from "../hook/useRequest.js";
 import { useAuth } from "../context/authContext.jsx";
@@ -58,29 +60,9 @@ export default function RequesterDashboard() {
   return (
     <div className="dash-root">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span className="logo-icon">⬡</span>
-          <span className="logo-text">Flow</span>
-        </div>
-        <nav className="sidebar-nav">
-          <a className="nav-item nav-active" href="#">
-            <span className="nav-icon">▦</span> Dashboard
-          </a>
-          <a className="nav-item" href="#" onClick={() => setShowModal(true)}>
-            <span className="nav-icon">＋</span> New Request
-            <kbd className="kbd">N</kbd>
-          </a>
-        </nav>
-        <div className="sidebar-user">
-          <div className="user-avatar">{user?.username?.[0]?.toUpperCase() || "U"}</div>
-          <div className="user-info">
-            <div className="user-name">{user?.username}</div>
-            <div className="user-role">{user?.department}</div>
-          </div>
-          <button className="logout-btn" onClick={logout} title="Logout">⏻</button>
-        </div>
-      </aside>
+      <SideBar onAction={(action) =>{
+      if (action === "newRequest") setShowModal(true);
+      }}/>
 
       {/* Main */}
       <main className="dash-main">
