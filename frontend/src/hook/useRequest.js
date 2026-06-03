@@ -29,7 +29,6 @@ export function useRequest(token) {
         fetchRequests(); // refresh list after submission
     }
     const edit = async(requestId, form) => {
-        setError("");
         await editingRequest(token, requestId, form);
         fetchRequests(); // refresh list after editing
     }

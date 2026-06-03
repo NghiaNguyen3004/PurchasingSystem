@@ -3,38 +3,48 @@ import { useState, useEffect } from "react";
 import {DEPARTMENTS} from "../constants/department.js"
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useFocusTrap } from '../hook/useFocusTrap.js';
+function generateBudgetCode(department) {
+    const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
+    const year = new Date().getFullYear()
+    const random = String(Math.floor(Math.random() * 9000) + 1000) // always 4 digits
+    return `${deptCode}-${year}-${random}`
+}
+const emptyForm = {
+    item_name: "", quantity: "", price_per_unit: "",
+    department: "", budget_code: "", reason: "",
+    
+}
 
 export default function NewRequestModal({ onClose, onSubmit, initialData = null }) {
     const trapRef = useFocusTrap(true)
     const isEditing = initialData !== null
 
-    function generateBudgetCode(department) {
-        const deptCode = department?.slice(0, 3).toUpperCase() || "GEN"
-        const year = new Date().getFullYear()
-        const random = String(Math.floor(Math.random() * 9000) + 1000) // always 4 digits
-        return `${deptCode}-${year}-${random}`
-    }
-    const emptyForm = {
-    item_name: "", quantity: "", price_per_unit: "",
-    department: "", budget_code: "", reason: "",
-    }
+    const [form, setForm] = useState({...emptyForm});
 
-    const [form, setForm] = useState(
-    initialData ? {
-      item_name: initialData.item_name,
-      quantity: initialData.quantity,
-      price_per_unit: initialData.price_per_unit,
-      department: initialData.department,
-      budget_code: initialData.budget_code,
-      reason: initialData.reason,
-    } : {...emptyForm});
+    // add this right after
+    useEffect(() => {
+    if (initialData) {
+        setForm({
+        item_name: initialData.item_name,
+        quantity: initialData.quantity,
+        price_per_unit: initialData.price_per_unit,
+        department: initialData.department,
+        budget_code: initialData.budget_code,
+        reason: initialData.reason,
+        })
+    }
+    }, [initialData?.id])  // 👈 only re-runs if a different request is opened
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [savedCount, setSavedCount] = useState(0);
 
     const handleDepartmentChange = (e) => {
-        const dept = e.target.value || "";
-        setForm({ ...form, department: dept, budget_code: generateBudgetCode(dept) });
+        const dept = e.target.value || ""
+        setForm(prev => ({ 
+            ...prev,
+            department: dept, 
+            budget_code: generateBudgetCode(dept) 
+        }));
     };
 
     // submits current form, resets for next one, keeps modal open
@@ -99,7 +109,7 @@ export default function NewRequestModal({ onClose, onSubmit, initialData = null 
                 <div className="field-group">
                 <label className="field-label">Item Name</label>
                 <input className="field-input" placeholder="e.g. Laptop" required
-                    value={form.item_name} onChange={e => setForm({ ...form, item_name: e.target.value })} />
+                    value={form.item_name} onChange={e => setForm(prev => ({ ...prev, item_name: e.target.value }))} />
                 </div>
                 <div className="field-group">
                     <label className="field-label">Department</label>
@@ -120,18 +130,18 @@ export default function NewRequestModal({ onClose, onSubmit, initialData = null 
                 <div className="field-group">
                 <label className="field-label">Quantity</label>
                 <input className="field-input" type="number" min="1" placeholder="1" required
-                    value={form.quantity} onChange={e => setForm({ ...form, quantity: e.target.value })} />
+                    value={form.quantity} onChange={e => setForm(prev => ({ ...prev, quantity: e.target.value }))} />
                 </div>
                 <div className="field-group">
                 <label className="field-label">Price per Unit ($)</label>
                 <input className="field-input" type="number" min="0" step="0.01" placeholder="0.00" required
-                    value={form.price_per_unit} onChange={e => setForm({ ...form, price_per_unit: e.target.value })} />
+                    value={form.price_per_unit} onChange={e => setForm(prev => ({ ...prev, price_per_unit: e.target.value }))} />
                 </div>
             </div>
             <div className="field-group">
                 <label className="field-label">Reason</label>
                 <textarea className="field-input field-textarea" placeholder="Why is this purchase needed?" required
-                value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} />
+                value={form.reason} onChange={e => setForm(prev => ({ ...prev, reason: e.target.value }))} />
             </div>
 
             {error && <div className="form-error">{error}</div>}
