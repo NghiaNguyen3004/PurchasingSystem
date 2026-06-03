@@ -48,6 +48,15 @@ export default function RequesterDashboard() {
   });
 
   const {focusedIndex, setFocusedIndex} = useTableNavigation(filteredRequests)
+  
+  const handleEditFocused = () => {
+  // only works if a row is focused and it's Pending
+    if (focusedIndex === null) return
+    const focused = filteredRequests[focusedIndex]
+    if (!focused) return
+    if (focused.status !== "Pending") return
+    setEditingRequest(focused)
+}
 
   const stats = {
     total: requests.length,
@@ -64,6 +73,7 @@ export default function RequesterDashboard() {
     { key: "f", fn: () => setShowFilter(true) },
     { key: "F", fn: () => setShowFilter(true) },
     { key: "ArrowDown", fn:() => setFocusedIndex(0) },
+    { key: "e", fn: () => handleEditFocused() },
   ])
 
   return (
