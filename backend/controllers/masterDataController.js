@@ -1,6 +1,6 @@
 import {
     getAllRequestTypes,
-  getSuppliersByType,
+  getSuppliersByRequestType,
   getItemsBySupplier
 } from '../models/requestModel.js'
 
@@ -17,7 +17,7 @@ export const getAllRequestTypesController = async (req, res) => {
 export const getAllSuppliersController = async (req, res) => {
     const { requestTypeId } = req.params
     try {
-        const suppliers = await getSuppliersByType(requestTypeId)
+        const suppliers = await getSuppliersByRequestType(requestTypeId)
         res.json(suppliers)
     }
     catch (error) {
