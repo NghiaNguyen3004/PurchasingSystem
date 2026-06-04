@@ -17,8 +17,7 @@
     "dev": "node --watch server.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "db:seed": "node --experimental-modules --loader ./models/db/seed.js"
+    "db:studio": "drizzle-kit studio"
   },
   "author": "Nghia Nguyen",
   "license": "MIT",

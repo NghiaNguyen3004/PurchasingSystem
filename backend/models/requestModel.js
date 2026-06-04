@@ -1,38 +1,24 @@
-import  db  from '../db/index.js'
-import { 
-    request_types, suppliers, supplier_items,
-    purchase_requests, request_items, users
- } from '../schema.js'
-import { eq, inArray } from 'drizzle-orm'
+import db from '../models/db/index.js'
+import {requests} from '../models/db/schema.js'
+import {eq} from 'drizzle-orm'
 
 //Model functions for requester actions
-export const getAllRequestTypes = async () => {
-    try{
-        const types = await db.select().from(request_types)
-        return types
+export const checkExistingRequest = async (requestId) => {
+    try {
+        const [existingRequest] = await db.select().from(requests).where(eq(requests.id, requestId))
+        return existingRequest
     } catch (error) {
-        console.error('Error fetching request types:', error)
+        console.error('Error checking existing request:', error)
         throw error
     }
 }
 
-export const getSuppliersByRequestType = async (requestTypeId) => {
+export const createRequest = async (requestData) => {
     try {
-        const suppliersList = await db.select().from(suppliers).where(eq(suppliers.request_type_id, requestTypeId))
-        return suppliersList
+        const [newRequest] = await db.insert(requests).values(requestData).returning()
+        return newRequest
     } catch (error) {
-        console.error('Error fetching suppliers:', error)
-        throw error
-    }
-}
-
-export const getItemsBySupplier = async (supplierId) => {
-
-    try {
-        const itemsList = await db.select().from(supplier_items).where(eq(supplier_items.supplier_id, supplierId))
-        return itemsList
-    } catch (error) {
-        console.error('Error fetching items:', error)
+        console.error('Error creating request:', error)
         throw error
     }
 }

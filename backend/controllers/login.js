@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import {getUserByUsername} from '../models/userModel.js'
 import 'dotenv/config'
-const JWT_SECRET = process.env.JWT_SECRET 
 
 export const login = async (req, res) => {
     const { username, password } = req.body
@@ -17,12 +16,7 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Wrong password' })
         }
-        const token = jwt.sign({ 
-            userId: user.id, 
-            username: user.username, 
-            userRole: user.roleName, 
-            department: user.department 
-        }, JWT_SECRET, { expiresIn: '2h' })
+        const token = jwt.sign({ userId: user.id, username: user.username, userType: user.user_type, department: user.department }, process.env.JWT_SECRET, { expiresIn: '2h' })
         res.json({ token }) 
     } catch (error) {
         console.log('Login error:', error)
