@@ -13,7 +13,7 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: 'All fields are required' })
         }
 
-        const validUserTypes = ['Requester', 'Approver', 'Admin']
+        const validUserTypes = ['Requester', 'Approver', 'Admin','Procure Manager']
         if (!validUserTypes.includes(user_type)) {
             return res.status(400).json({ message: 'Invalid user type' })
         }

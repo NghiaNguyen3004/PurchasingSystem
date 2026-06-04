@@ -87,6 +87,7 @@ export default function NewRequestModal({ onClose, onSubmit, initialData = null 
 
     useKeyboardShortcuts([
         { key: "Escape", fn: handleDone },
+        { key: "Shift+Enter", fn: handleSaveAndContinue, metaKey: true }
         
     ]); 
 
