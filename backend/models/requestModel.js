@@ -49,9 +49,7 @@ export const createPurchaseRequest = async (header, items) => {
             
             const requestItems = items.map(item => ({
                 request_id: newRequest.id,
-                item_code: item.item_code,
-                supplier_id: newRequest.supplier_id,
-                name: item.name,
+                supplier_item_id: item.supplier_item_id,
                 quantity: item.quantity,
                 unit: item.unit,
             }))
@@ -97,9 +95,9 @@ export const getRequestsWithItems = async (whereClause) => {
             request_id:          request_items.request_id,
             supplier_item_id:    request_items.supplier_item_id,
             quantity:            request_items.quantity,
-            item_code:           supplier_items.item_code,
             item_name:           supplier_items.name,
             unit:                supplier_items.unit,
+            item_code:           supplier_items.item_code,
         })
         .from(request_items)
         .innerJoin(supplier_items, eq(request_items.supplier_item_id, supplier_items.id))

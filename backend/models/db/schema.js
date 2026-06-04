@@ -55,7 +55,7 @@ export const purchase_requests = pgTable('purchase_requests', {
     reason: text('reason').notNull(),
     status: text('status').notNull().default('Pending'),
     created_at: date('timestamp', { mode: 'date' }).defaultNow(),
-    expected_delivery: date('expected_delivery', { mode: 'date' }).notNull(),
+    expected_delivery: date('expected_delivery', { mode: 'string' }).notNull(),
 },
     // Constraint
     (purchase_requests) => [
@@ -67,8 +67,7 @@ export const purchase_requests = pgTable('purchase_requests', {
 //Request items
 export const request_items = pgTable('request_items', {
     id: serial('id').primaryKey(),
-    request_id: integer('request_id').notNull().references(() => purchase_requests.id, { onDelete: 'cascade' }).unique(),
-    item_code: text('item_code').notNull().references(() => supplier_items.item_code),
+    request_id: integer('request_id').notNull().references(() => purchase_requests.id, { onDelete: 'cascade' }),
     supplier_item_id: integer('supplier_item_id').notNull().references(() => supplier_items.id).unique(),
     quantity: integer('quantity').notNull(),
     unit_price_snapshot: numeric('unit_price_snapshot', { precision: 10, scale: 2 })

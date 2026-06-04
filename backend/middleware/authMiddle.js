@@ -16,7 +16,7 @@ export const authenticateToken = (req, res, next) => {
 }
 
 export const checkRole = (...allowedRoles) => (req, res, next) => {
-    if (!allowedRoles.includes(req.user.roleName)) {
+    if (!allowedRoles.includes(req.user.userRole)) {
         return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
     } 
     next();
