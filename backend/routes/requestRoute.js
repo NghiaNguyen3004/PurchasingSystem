@@ -4,7 +4,9 @@ import {
     getAllRequestsController,
     getMyRequestsController,
     getPendingRequestsController,
-    getApprovedRequestsController
+    getApprovedRequestsController,
+    approveRequestController,
+    rejectRequestController
 } from '../controllers/requestController.js'
 import { authenticateToken, checkRole } from '../middleware/authMiddle.js'
 const requestRouter = express.Router()
@@ -15,6 +17,11 @@ requestRouter.get('/my-requests', authenticateToken, checkRole('Requester'), get
 
 //Approver
 requestRouter.get('/pending', authenticateToken, checkRole('Approver'), getPendingRequestsController)
+requestRouter.patch('/:requestId/approve', authenticateToken, checkRole('Approver'), approveRequestController)
+requestRouter.patch('/:requestId/reject', authenticateToken, checkRole('Approver'), rejectRequestController)
+
+//Procure Manager
 requestRouter.get('/approved', authenticateToken, checkRole('Approver'), getApprovedRequestsController)
+
 
 export default requestRouter

@@ -1,7 +1,8 @@
 import {
     createPurchaseRequest,
     getAllRequestHeaderById,
-    getRequestsWithItems
+    getRequestsWithItems,
+    updateRequestStatus
 } from '../models/requestModel.js'
 import { eq } from 'drizzle-orm'
 import { purchase_requests } from '../models/db/schema.js'
@@ -78,6 +79,32 @@ export const getPendingRequestsController = async (req, res) => {
     }
 }
 
+//Controller to approve a request (For approver)
+export const approveRequestController = async (req, res) => {
+    const { requestId } = req.params
+    try{
+        const data = await updateRequestStatus(requestId, 'Approved')
+        res.status(200).json(data)
+    }
+    catch (error) {
+        console.error('Error approving request:', error)
+        res.status(500).json({ error: 'Internal server error' })
+    }
+}
+
+//Controller to reject a request (For approver)
+export const rejectRequestController = async (req, res) => {
+    const { requestId } = req.params
+    try{
+        const data = await updateRequestStatus(requestId, 'Rejected')
+        res.status(200).json(data)
+    }
+    catch (error) {
+        console.error('Error rejecting request:', error)
+        res.status(500).json({ error: 'Internal server error' })
+    }
+}
+
 //Controller to get approved requests (For Procure Manager)
 export const getApprovedRequestsController = async (req, res) => {
     try{
@@ -91,6 +118,33 @@ export const getApprovedRequestsController = async (req, res) => {
     }
 }
 
-//Controller to approve a request (For approver)
+//Controller to process a request
+export const processRequestController = async (req, res) => {
+    const { requestId } = req.params
+    const {status} = req.body
+    try{
+        const data = await updateRequestStatus(requestId, 'Processing')
+        res.status(200).json(data)
+    }
+    catch (error) {
+        console.error('Error processing request:', error)
+        res.status(500).json({ error: 'Internal server error' })
+    }
+}
+
+export const completeRequestController = async (req, res) => {
+    const { requestId } = req.params
+    
+    try{
+        const data = await updateRequestStatus(requestId, 'Completed')
+        res.status(200).json(data)
+    }
+    catch (error) {
+        console.error('Error completing request:', error)
+        res.status(500).json({ error: 'Internal server error' })
+}
+}
+
+
 
         
