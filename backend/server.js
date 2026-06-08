@@ -5,6 +5,7 @@ import authRouter from './routes/auth.js'
 //import adminRouter from './routes/adminRoute.js'
 import masterDataRouter from './routes/masterDataRoute.js'
 import requestRouter from './routes/requestRoute.js'
+import procureRouter from './routes/procureManageRoute.js'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -19,6 +20,7 @@ app.use('/auth', authRouter)
 app.use('/request', requestRouter)
 //app.use('/admin', adminRouter)
 app.use('/master', masterDataRouter)
+app.use('/procure', procureRouter)
 app.use('/health', (req,res) =>{
     res.json({message: 'Server is healthy'})
 })

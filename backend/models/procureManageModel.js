@@ -7,7 +7,6 @@ import {eq, and} from 'drizzle-orm'
 
 //Working with suppliers
 export const createSupplier = async (name, requestTypeId) => {
-    try{
         const [newSupplier] = await db
         .insert(suppliers)
         .values({name, request_type_id: requestTypeId})
@@ -15,14 +14,9 @@ export const createSupplier = async (name, requestTypeId) => {
 
         return newSupplier
 
-    } catch (error) {
-        console.error('Error creating supplier:', error)
-        throw error
-    }
 }
 
 export const updateSupplier = async (supplierId, data) => {
-    try{
         const [updatedSupplier] = await db
         .update(suppliers)
         .set(data)
@@ -30,59 +24,68 @@ export const updateSupplier = async (supplierId, data) => {
         .returning()
 
         return updatedSupplier
-    } catch (error) {
-        console.error('Error updating supplier:', error)
-        throw error
-    }
 }
 
 export const deleteSupplier = async (supplierId) => {
-    try{
         await db.delete(suppliers).where(eq(suppliers.id, Number(supplierId)))
         return { message: 'Supplier deleted successfully' }
-    }
-    catch (error) {
-        console.error('Error deleting supplier:', error)
-        throw error
-    }
 }
 
 //Working with supplier items
 export const createSupplierItem = async (supplierId, data) => {
-    try{
         const [newSupplierItem] = await db
         .insert(supplier_items)
         .values({supplier_id: Number(supplierId), ...data})
         .returning()
 
         return newSupplierItem
-    } catch (error) {
-        console.error('Error creating supplier item:', error)
-        throw error
-    }
 }
 
 export const updateSupplierItem = async (itemId, data) => {
-    try{
         const [updatedItem] = await db
         .update(supplier_items)
         .set(data)
         .where(eq(supplier_items.id, Number(itemId)))
         .returning()
         return updatedItem
-    } catch (error) {
-        console.error('Error updating supplier item:', error)
-        throw error
-    }
 }
 
 export const deleteSupplierItem = async (itemId) => {
-    try{
         await db.delete(supplier_items).where(eq(supplier_items.id, Number(itemId)))
         return { message: 'Supplier item deleted successfully' }
-    }
-    catch (error) {
-        console.error('Error deleting supplier item:', error)
-        throw error
-    }
+}
+
+//Working with price
+export const updateItemPrice = async(supplierId, priceList) => {
+    // priceList = [{supplier_item_id, unit_price}, ...]
+        const updatedItems = await Promise.all(
+            priceList.map(async({supplier_item_id, unit_price}) => {
+                const [row] = await db.update(supplier_items)
+                .set({price_per_unit: unit_price})
+                .where(and(
+                    eq(supplier_items.id, Number(supplier_item_id)),
+                    eq(supplier_items.supplier_id, Number(supplierId))
+                ))
+                .returning()
+                return row
+            })
+        )
+        return updatedItems
+}
+
+export const updateRequestItemPrices = async(requestId, priceList) => {
+    // priceList = [{request_item_id, unit_price_snapshot}, ...]
+        const updatedItems = await Promise.all(
+            priceList.map(async({request_item_id, unit_price_snapshot}) => {
+                const [row] = await db.update(request_items)
+                .set({unit_price_snapshot})
+                .where(and(
+                    eq(request_items.id, Number(request_item_id)),
+                    eq(request_items.request_id, Number(requestId))
+                ))
+                .returning()
+            return row
+           })
+        )
+        return updatedItems
 }
