@@ -7,6 +7,7 @@ const adminRouter = express.Router()
 
 adminRouter.use(authenticateToken, checkRole("Admin"))
 
+adminRouter.get('/roles', adminControllers.getAllRolesController)
 adminRouter.get('/users', adminControllers.getAllUsersController)
 adminRouter.post('/register', register)
 adminRouter.patch('/users/:id/role', adminControllers.updateUserRoleController)

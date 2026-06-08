@@ -1,6 +1,10 @@
 import db from '../models/db/index.js'
-import {users} from '../models/db/schema.js'
+import {users, roles} from '../models/db/schema.js'
 import {eq} from 'drizzle-orm'
+
+export const getAllRoles = async() =>{
+    return await db.select().from(roles)
+}
 
 export const getAllUsers = async() =>{
     try {
@@ -18,14 +22,17 @@ export const getAllUsers = async() =>{
     }
 }
 
-export const updateUserRole = async (id, newRole) => {
-    const validRoles = ['Requester', 'Approver', 'Admin']
-    if (!validRoles.includes(newRole)) {
-        throw new Error('Invalid user role')
-    }
+export const updateUserRole = async (id, role_id) => {
+    
     try {
-        const updated = await db.update(users).set({ user_type: newRole }).where(eq(users.id, id)).returning();
-        return updated;
+        const [role] = await db.select().from(roles).where(eq(roles.id, Number(role_id)))
+        if (!role) throw new Error('Invalid role')
+
+        const updated = await db.update(users)
+        .set({ role_id: Number(role_id) })
+        .where(eq(users.id, Number(id)))
+        .returning({ id: users.id, username: users.username, role_id: users.role_id })
+        return updated
     } catch (error) {
         console.error(`Error updating user role for id ${id}:`, error);
         throw error;
@@ -34,7 +41,7 @@ export const updateUserRole = async (id, newRole) => {
 
 export const deleteUserById = async (id) => {
     try {
-        const deleted = await db.delete(users).where(eq(users.id, id)).returning();
+        const deleted = await db.delete(users).where(eq(users.id, Number(id))).returning();
         return deleted;
     } catch (error) {
         console.error(`Error deleting user with id ${id}:`, error);

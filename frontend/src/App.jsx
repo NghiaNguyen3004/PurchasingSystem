@@ -7,10 +7,11 @@ import { useAuth } from "./context/authContext.jsx";
 
  
 export default function App() {
+  const { token, user, login } = useAuth();
   const DASHBOARDS = {
     "Requester":       <RequesterDashboard />,
-    "Approver":        <ApproverDashboard />,
-    "Procure Manager": <ProcureManagerDashboard />,
+    //"Approver":        <ApproverDashboard />,
+    //"Procure Manager": <ProcureManagerDashboard />,
     "Admin":           <AdminDashboard />,
   }
 

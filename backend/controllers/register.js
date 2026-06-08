@@ -6,16 +6,11 @@ import 'dotenv/config'
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12
 
 export const register = async (req, res) => {
-    const { username, password, user_type, department } = req.body
+    const { username, password, role_id, department } = req.body
     try {
         //Check the fields
-        if (!username || !password || !user_type || !department) {
+        if (!username || !password || !role_id || !department) {
             return res.status(400).json({ message: 'All fields are required' })
-        }
-
-        const validUserTypes = ['Requester', 'Approver', 'Admin','Procure Manager']
-        if (!validUserTypes.includes(user_type)) {
-            return res.status(400).json({ message: 'Invalid user type' })
         }
 
         // Check whether the user is already exists
@@ -25,9 +20,8 @@ export const register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, saltRounds)
-        const newUser = await createUser({ username, user_type, password: hashedPassword, department })
-        const token = jwt.sign({userId: newUser.id, username: newUser.username, userType: newUser.user_type, department: newUser.department}, process.env.JWT_SECRET, { expiresIn: '2h' });
-        res.status(201).json({ message: 'User created successfully', token })
+        const newUser = await createUser({ username, role_id: Number(role_id), password: hashedPassword, department })
+        res.status(201).json({ message: 'User created successfully', user: { id: newUser.id, username: newUser.username, role_id: newUser.role_id } })
     } catch (error) {
         console.log('Registration error:', error)
         res.status(500).json({ message: 'Internal server error' })

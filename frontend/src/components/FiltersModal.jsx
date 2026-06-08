@@ -7,7 +7,8 @@ import "../styles/filterModal.css"
 import {useKeyboardShortcuts} from "../hook/useKeyboardShortcuts.js"
 import { useFocusTrap } from "../hook/useFocusTrap.js"
 
-export default function FiltersModal({ filters, onApply, onClose }) {
+export default function FiltersModal({ filters, statusOptions, onApply, onClose }) {
+    const statuses = statusOptions || ["All", "Pending", "Approved", "Rejected"]
     const [temp, setTemp] = useState(filters)
     const trapRef = useFocusTrap(true)
 

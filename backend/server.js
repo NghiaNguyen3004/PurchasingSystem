@@ -2,7 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import authRouter from './routes/auth.js'
-//import adminRouter from './routes/adminRoute.js'
+import adminRouter from './routes/adminRoute.js'
 import masterDataRouter from './routes/masterDataRoute.js'
 import requestRouter from './routes/requestRoute.js'
 import procureRouter from './routes/procureManageRoute.js'
@@ -18,7 +18,7 @@ app.use(cors(
 app.use(express.json())
 app.use('/auth', authRouter)
 app.use('/request', requestRouter)
-//app.use('/admin', adminRouter)
+app.use('/admin', adminRouter)
 app.use('/master', masterDataRouter)
 app.use('/procure', procureRouter)
 app.use('/health', (req,res) =>{

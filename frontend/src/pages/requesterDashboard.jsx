@@ -23,6 +23,8 @@ export default function RequesterDashboard() {
   const { token, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
+  const toggleExpand = (id) => setExpandedId(prev => prev === id ? null : id)
 
   const {requests, loading, fetchRequests, submitNewRequest} = useRequest(token)
 
@@ -31,7 +33,6 @@ export default function RequesterDashboard() {
     dateFrom: "",
     dateTo:"", 
   });
-  const[editingRequest, setEditingRequest] = useState(null)
 
   const filteredRequests = requests.filter(r => {
       const statusMatch = filters.status === "All" || r.status === filters.status
@@ -49,21 +50,12 @@ export default function RequesterDashboard() {
 
   const {focusedIndex, setFocusedIndex} = useTableNavigation(filteredRequests)
   
-  const handleEditFocused = () => {
-  // only works if a row is focused and it's Pending
-    if (focusedIndex === null) return
-    const focused = filteredRequests[focusedIndex]
-    if (!focused) return
-    if (focused.status !== "Pending") return
-    setEditingRequest(focused)
-}
 
   const stats = {
     total: requests.length,
     pending: requests.filter(r => r.status === "Pending").length,
     approved: requests.filter(r => r.status === "Approved").length,
     rejected: requests.filter(r => r.status === "Rejected").length,
-    totalValue: requests.reduce((sum, r) => sum + (r.quantity * r.price_per_unit), 0)
   };
 
 
@@ -121,42 +113,47 @@ export default function RequesterDashboard() {
         > 
         <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Unit Price</th>
-                  <th>Total</th>
+                  <th>Supplier</th>
+                  <th>Type</th>
+                  <th>Department</th>
                   <th>Budget Code</th>
                   <th>Status</th>
-                  <th>Date</th>
+                  <th>Delivery</th>
+                  <th>Submitted</th>
+                  <th></th>
                 </tr>
         </thead>
         <tbody>
           {filteredRequests.map((r, index) => (
-            <RequestRow 
+            <RequestRow
               key={r.id}
               request={r}
               index={index}
               focusedIndex={focusedIndex}
               setFocusedIndex={setFocusedIndex}
-              onEdit ={setEditingRequest}
+              expandedId={expandedId}
+              toggleExpand={toggleExpand}
             />
-            
+                        
           ))}
         </tbody>
         </PageTable>
       </main>
 
-      {(showModal || editingRequest) && (
-      <NewRequestModal
-          onClose={() => { setShowModal(false); setEditingRequest(null) }}
-          onSubmit={editingRequest
-          ? (form) => edit(editingRequest.id, form)
-          : submitNewRequest
-        }
-        initialData={editingRequest}
+      {showModal && (
+        <NewRequestModal
+          onClose={() => setShowModal(false)}
+          onSubmit={submitNewRequest}
         />
-    )}
-      {showFilter && <FiltersModal filters={filters} onApply={setFilters} onClose={() => setShowFilter(false)}/>}
+      )}
+      {showFilter && 
+      <FiltersModal
+        filters={filters}
+        statusOptions={["All", "Pending", "Approved", "Processing", "Completed", "Rejected"]}
+        onApply={setFilters}
+        onClose={() => setShowFilter(false)}
+      />
+      }
     </div>
   );
 }
