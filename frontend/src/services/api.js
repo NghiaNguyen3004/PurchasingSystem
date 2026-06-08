@@ -35,6 +35,7 @@ export const getSuppliersByType = async (token, typeId) => {
     return data
 }
 
+
 export const getItemsBySupplier = async (token, supplierId) => {
     const res = await authFetch(`${SERVER_URL}/master/items/${supplierId}`, {
         headers: authHeaders(token),
@@ -43,6 +44,8 @@ export const getItemsBySupplier = async (token, supplierId) => {
     if (!res.ok) throw new Error(data.message || "Failed to fetch supplier items")
     return data
 }
+
+
 
 // Requester APIs
 export const getMyRequests = async (token) => {

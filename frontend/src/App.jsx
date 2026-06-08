@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import RequesterDashboard from "./pages/RequesterDashboard";
+import ApproverDashboard from "./pages/ApproverDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import { useAuth } from "./context/authContext.jsx";
 // import ApproverDashboard from "./ApproverDashboard"; // coming next
@@ -10,7 +11,7 @@ export default function App() {
   const { token, user, login } = useAuth();
   const DASHBOARDS = {
     "Requester":       <RequesterDashboard />,
-    //"Approver":        <ApproverDashboard />,
+    "Approver":        <ApproverDashboard />,
     //"Procure Manager": <ProcureManagerDashboard />,
     "Admin":           <AdminDashboard />,
   }
