@@ -77,7 +77,7 @@ export const getRequestsWithItems = async (whereClause) => {
             reason:           purchase_requests.reason,
             status:           purchase_requests.status,
             created_at:       purchase_requests.created_at,
-            expected_delivery: purchase_requests.expected_date,
+            expected_delivery: purchase_requests.expected_delivery,
             requester:        users.username,
             supplier_name:    suppliers.name,
         })

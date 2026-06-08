@@ -18,7 +18,7 @@ export function useRequest(token) {
     setLoading(true)
     try {
       const data = await fetcher(token)
-      setRequests(Array.isArray(data) ? data : [])
+      setRequests(data)
     } finally {
       setLoading(false)
     }

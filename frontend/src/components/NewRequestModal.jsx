@@ -287,7 +287,7 @@ export default function NewRequestModal({ onClose, onSubmit }) {
             {error && <div className="form-error">{error}</div>}
 
             <div className="nrm-form-actions">
-              <button type="button" className="btn-secondary" onClick={handleDone}>
+              <button type="button" className="btn-secondary" onClick={handleSubmit}>
                 Done
               </button>
               <button type="submit" form="request-form" className="btn-primary" disabled={submitting}>

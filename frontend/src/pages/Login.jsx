@@ -4,7 +4,6 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000"; /
 const roles = ["Requester", "Approver"];
 
 export default function Login({ onLogin }) {
-  const [activeTab, setActiveTab] = useState("Requester");
   const [form, setForm] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -17,11 +16,11 @@ export default function Login({ onLogin }) {
       const res = await fetch(`${SERVER_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, user_type: activeTab }),
+        body: JSON.stringify({ ...form }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
-      onLogin(data.token, activeTab);
+      onLogin(data.token);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -38,19 +37,6 @@ export default function Login({ onLogin }) {
           </div>
           <h1 className="login-title">ProcureFlow</h1>
           <p className="login-subtitle">Internal Procurement System</p>
-        </div>
-
-        <div className="tab-bar">
-          {roles.map((role) => (
-            <button
-              key={role}
-              className={`tab-btn ${activeTab === role ? "tab-active" : ""}`}
-              onClick={() => { setActiveTab(role); setError(""); }}
-            >
-              <span className="tab-icon">{role === "Requester" ? "◈" : "◉"}</span>
-              {role}
-            </button>
-          ))}
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
@@ -83,14 +69,10 @@ export default function Login({ onLogin }) {
             {loading ? (
               <span className="btn-spinner" />
             ) : (
-              `Sign in as ${activeTab}`
+              "Sign in"
             )}
           </button>
         </form>
-
-        <p className="login-footer">
-          Signing in as <strong>{activeTab}</strong> — contact IT to change your role
-        </p>
       </div>
     </div>
   );
