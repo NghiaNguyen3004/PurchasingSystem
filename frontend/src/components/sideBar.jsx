@@ -11,17 +11,22 @@ const navItems = {
   Admin: [
     { icon: "◈", label: "User Management", action: null },
   ],
+  "Procure Manager": [
+  { icon: "▦", label: "Approved Requests", action: "requests" },
+  { icon: "◈", label: "Supplier Catalog",  action: "catalog" },
+],
 }
 
 const roleColors = {
   Requester: "#818cf8",
   Approver:  "#4ade80",
   Admin:     "#f87171",
+  "Procure Manager" : "#fbbf24",
 }
 
 export default function SideBar({onAction}){
     const {user, logout} = useAuth();
-    const role = user?.userType || "Requester";
+    const role = user?.userRole || "Requester";
     const items = navItems[role] || [];
 
     return (

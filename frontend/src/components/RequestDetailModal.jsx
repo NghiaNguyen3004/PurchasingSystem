@@ -236,6 +236,15 @@ export default function RequestDetailModal({
                     </div>
                   </div>
                 ))}
+                {showPricing && (
+                <input
+                    className="price-input"
+                    type="number"
+                    placeholder="Set price..."
+                    defaultValue={item.unit_price_snapshot ?? ""}
+                    onChange={e => handlePriceChange(item.id, e.target.value)}
+                />
+                )}
               </div>
             )}
           </div>
