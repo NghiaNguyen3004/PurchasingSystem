@@ -14,16 +14,16 @@ export default function App() {
     return <Login onLogin={login} />;
   }
  
-  if (user.userType === "Requester") {
+  if (user.roleName === "Requester") {
     return <RequesterDashboard token={token} user={user} onLogout={logout} />;
   }
  
-  if (user.userType === "Approver") {
+  if (user.roleName === "Approver") {
     // return <ApproverDashboard token={token} user={user} onLogout={logout} />;
     return <div style={{ color: "#fff", padding: 40 }}>Approver dashboard coming soon...</div>;
   }
 
-  if (user.userType === "Admin") {
+  if (user.roleName === "Admin") {
     return <AdminDashboard token={token} user={user} onLogout={logout} />;
   }
  
