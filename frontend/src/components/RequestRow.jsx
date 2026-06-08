@@ -1,4 +1,5 @@
 import StatusBadge from "./statusBadge.jsx"
+import "../styles/requestRow.css"
 
 const STATUS_ORDER = ["Pending", "Approved", "Processing", "Completed", "Rejected"]
 

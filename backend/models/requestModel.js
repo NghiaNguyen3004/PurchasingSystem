@@ -80,10 +80,12 @@ export const getRequestsWithItems = async (whereClause) => {
             expected_delivery: purchase_requests.expected_delivery,
             requester:        users.username,
             supplier_name:    suppliers.name,
+            request_type_name:     request_types.name,
         })
         .from(purchase_requests)
         .innerJoin(users,     eq(purchase_requests.user_id,     users.id))
         .innerJoin(suppliers, eq(purchase_requests.supplier_id, suppliers.id))
+        .innerJoin(request_types, eq(purchase_requests.request_type_id, request_types.id))
         .where(whereClause)
 
         if (requests.length === 0) return []

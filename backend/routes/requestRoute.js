@@ -1,7 +1,6 @@
 import express from 'express'
 import {
     createRequestController,
-    getAllRequestsController,
     getMyRequestsController,
     getPendingRequestsController,
     getApprovedRequestsController,
@@ -13,7 +12,7 @@ const requestRouter = express.Router()
 
 //Requester
 requestRouter.post('/', authenticateToken, checkRole('Requester'), createRequestController)
-requestRouter.get('/my-requests', authenticateToken, checkRole('Requester'), getAllRequestsController)
+requestRouter.get('/my-requests', authenticateToken, checkRole('Requester'), getMyRequestsController)
 
 //Approver
 requestRouter.get('/pending', authenticateToken, checkRole('Approver'), getPendingRequestsController)
@@ -21,7 +20,7 @@ requestRouter.patch('/:requestId/approve', authenticateToken, checkRole('Approve
 requestRouter.patch('/:requestId/reject', authenticateToken, checkRole('Approver'), rejectRequestController)
 
 //Procure Manager
-requestRouter.get('/approved', authenticateToken, checkRole('Approver'), getApprovedRequestsController)
+requestRouter.get('/approved', authenticateToken, checkRole('ProcureManager'), getApprovedRequestsController)
 
 
 export default requestRouter
