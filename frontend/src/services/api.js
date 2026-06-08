@@ -27,7 +27,7 @@ export const getRequestTypes = async (token) => {
 }
 
 export const getSuppliersByType = async (token, typeId) => {
-    const res = await authFetch(`${SERVER_URL}/master/suppliers?typeId=${typeId}`, {
+    const res = await authFetch(`${SERVER_URL}/master/suppliers/${typeId}`, {
         headers: authHeaders(token),
     })
     const data = await res.json()
@@ -36,7 +36,7 @@ export const getSuppliersByType = async (token, typeId) => {
 }
 
 export const getItemsBySupplier = async (token, supplierId) => {
-    const res = await authFetch(`${SERVER_URL}/master/supplier-items?supplierId=${supplierId}`, {
+    const res = await authFetch(`${SERVER_URL}/master/items/${supplierId}`, {
         headers: authHeaders(token),
     })
     const data = await res.json()
@@ -46,7 +46,7 @@ export const getItemsBySupplier = async (token, supplierId) => {
 
 // Requester APIs
 export const getMyRequests = async (token) => {
-    const allRequests = await authFetch(`${SERVER_URL}/request/mine`, {
+    const allRequests = await authFetch(`${SERVER_URL}/request/my-requests`, {
         headers: authHeaders(token),
     });
     const dataToRead = await allRequests.json();

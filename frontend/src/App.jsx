@@ -17,5 +17,5 @@ export default function App() {
 
   // in render
   if (!token || !user) return <Login onLogin={login} />
-  return DASHBOARDS[user.roleName] || <Login onLogin={login} />
+  return DASHBOARDS[user.userRole] || <Login onLogin={login} />
 }
