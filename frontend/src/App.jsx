@@ -7,25 +7,14 @@ import { useAuth } from "./context/authContext.jsx";
 
  
 export default function App() {
-  const { token, user, login, logout } = useAuth();
-
- 
-  if (!token || !user) {
-    return <Login onLogin={login} />;
-  }
- 
-  if (user.roleName === "Requester") {
-    return <RequesterDashboard token={token} user={user} onLogout={logout} />;
-  }
- 
-  if (user.roleName === "Approver") {
-    // return <ApproverDashboard token={token} user={user} onLogout={logout} />;
-    return <div style={{ color: "#fff", padding: 40 }}>Approver dashboard coming soon...</div>;
+  const DASHBOARDS = {
+    "Requester":       <RequesterDashboard />,
+    "Approver":        <ApproverDashboard />,
+    "Procure Manager": <ProcureManagerDashboard />,
+    "Admin":           <AdminDashboard />,
   }
 
-  if (user.roleName === "Admin") {
-    return <AdminDashboard token={token} user={user} onLogout={logout} />;
-  }
- 
-  return <Login onLogin={login} />;
+  // in render
+  if (!token || !user) return <Login onLogin={login} />
+  return DASHBOARDS[user.roleName] || <Login onLogin={login} />
 }
