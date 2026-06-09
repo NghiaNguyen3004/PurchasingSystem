@@ -6,20 +6,18 @@ export const getAllRoles = async() =>{
     return await db.select().from(roles)
 }
 
-export const getAllUsers = async() =>{
-    try {
-        const allUsers = await db.select({
-            id: users.id,
-            username: users.username,
-            user_type: users.user_type,
-            department: users.department,
-            created_at: users.created_at
-        }).from(users)
-        return allUsers;
-    } catch (error) {
-        console.error("Error fetching all users:", error);
-        throw error;
-    }
+
+export const getAllUsers = async () => {
+  return await db.select({
+    id:         users.id,
+    username:   users.username,
+    department: users.department,
+    role_id:    users.role_id,
+    roleName:   roles.name,
+    created_at: users.created_at,
+  })
+  .from(users)
+  .innerJoin(roles, eq(users.role_id, roles.id))
 }
 
 export const updateUserRole = async (id, role_id) => {

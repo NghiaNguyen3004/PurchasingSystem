@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../context/authContext.jsx"
 import { DEPARTMENTS } from "../constants/department.js"
-import { getAllUsers, deleteUser, changeUserRole, registerUser } from "../services/api.js"
+import { getAllUsers, deleteUser, changeUserRole, registerUser, getAllRoles } from "../services/api.js"
 import "../styles/adminDashboard.css"
 import "../styles/shared.css"
 import SideBar from "../components/sideBar.jsx"
 
-const USER_TYPES = ["Requester", "Approver", "Admin"]
 
 
 export default function AdminDashboard() {
@@ -17,7 +16,7 @@ export default function AdminDashboard() {
   const [loadingUsers, setLoadingUsers] = useState(true)
 
   // register form
-  const [form, setForm] = useState({ username: "", password: "", user_type: "", department: "" })
+  const [form, setForm] = useState({ username: "", password: "", role_id: "", department: "" })
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState("")
   const [formSuccess, setFormSuccess] = useState("")
@@ -26,6 +25,13 @@ export default function AdminDashboard() {
   const [editingRoleId, setEditingRoleId] = useState(null)
   const [roleLoading, setRoleLoading] = useState(null)
   const [deleteLoading, setDeleteLoading] = useState(null)
+
+  const [roles, setRoles] = useState([])
+  const [pendingRole, setPendingRole] = useState({})
+
+  useEffect(() => {
+    getAllRoles(token).then(setRoles)
+  }, [token])
 
 
 function TypeBadge({type}){
@@ -57,7 +63,7 @@ function TypeBadge({type}){
       const data = await registerUser(token, form)
       console.log("Registered user:", data)
       setFormSuccess(`"${form.username}" registered successfully`)
-      setForm({ username: "", password: "", user_type: "", department: "" })
+      setForm({ username: "", password: "", role_id: "", department: "" })
       fetchUsers()
     } catch (err) {
       setFormError(err.message)
@@ -79,11 +85,19 @@ function TypeBadge({type}){
     }
   }
 
-  const handleRoleChange = async (id, newRole) => {
-    setRoleLoading(id)
+  // selecting a role just stores it, doesn't save yet
+  const handleRoleSelect = (userId, roleId) => {
+    setPendingRole({ userId, roleId })
+  }
+
+  // confirm button actually saves it
+  const confirmRoleChange = async () => {
+    const { userId, roleId } = pendingRole
+    setRoleLoading(userId)
     try {
-      await changeUserRole(token, id, newRole)
+      await changeUserRole(token, userId, roleId)
       setEditingRoleId(null)
+      setPendingRole({})
       fetchUsers()
     } catch (err) {
       alert(err.message)
@@ -91,6 +105,7 @@ function TypeBadge({type}){
       setRoleLoading(null)
     }
   }
+
 
   return (
     <div className="dash-root">
@@ -132,11 +147,11 @@ function TypeBadge({type}){
               </div>
 
               <div className="field-group">
-                <label className="field-label">User Type</label>
+                <label className="field-label">Role</label>
                 <select className="field-input field-select" required
-                  value={form.user_type} onChange={e => setForm({ ...form, user_type: e.target.value })}>
-                  <option value="">Select type...</option>
-                  {USER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  value={form.role_id} onChange={e => setForm({ ...form, role_id: e.target.value })}>
+                  <option value="">Select role...</option>
+                  {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                 </select>
               </div>
 
@@ -193,19 +208,27 @@ function TypeBadge({type}){
                           <div className="role-edit">
                             <select
                               className="field-input role-select"
-                              defaultValue={u.user_type}
-                              onChange={e => handleRoleChange(u.id, e.target.value)}
+                              defaultValue={u.role_id}
+                              onChange={e => handleRoleSelect(u.id, e.target.value)}
                               disabled={roleLoading === u.id}
                               autoFocus
                             >
-                              {USER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                              {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                             </select>
+                            {pendingRole.userId === u.id && (
+                              <button className="confirm-role-btn" onClick={confirmRoleChange}
+                                disabled={roleLoading === u.id}>
+                                {roleLoading === u.id ? "..." : "✓"}
+                              </button>
+                            )}
                             <button className="cancel-edit-btn"
-                              onClick={() => setEditingRoleId(null)}>✕</button>
+                              onClick={() => { setEditingRoleId(null); setPendingRole({}) }}>
+                              ✕
+                            </button>
                           </div>
                         ) : (
                           <div className="role-display">
-                            <TypeBadge type={u.user_type} />
+                            <TypeBadge type={u.roleName} />
                             {u.id !== user?.userId && (
                               <button className="edit-role-btn"
                                 onClick={() => setEditingRoleId(u.id)}>

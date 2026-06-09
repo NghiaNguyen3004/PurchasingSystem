@@ -3,7 +3,7 @@ import {getAllUsers, deleteUserById, updateUserRole, getAllRoles} from '../model
 export const getAllUsersController = async (req, res) => {
     try {
         const users = await getAllUsers()
-        res.json({ users })
+        res.json(users)
     } catch (error) {
         console.error('Error fetching users:', error)
         res.status(500).json({ message: 'Internal server error' })

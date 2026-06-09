@@ -227,6 +227,15 @@ export const priceRequestItems = async (token, requestId, prices) => {
 
 
 // Admin APIs
+export const getAllRoles = async (token) => {
+    const res = await authFetch(`${SERVER_URL}/admin/roles`, {
+        headers: authHeaders(token),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to fetch roles");
+    return data;
+}
+
 export const getAllUsers = async (token) => {
     const res = await authFetch(`${SERVER_URL}/admin/users`, {
         headers: authHeaders(token),
