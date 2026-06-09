@@ -94,6 +94,7 @@ export const getRequestsWithItems = async (whereClause) => {
         const requestIds = requests.map(r => r.id)
         //Get the items with the request.
         const items = await db.select({
+            request_items_id: request_items.id,
             request_id:          request_items.request_id,
             supplier_item_id:    request_items.supplier_item_id,
             quantity:            request_items.quantity,

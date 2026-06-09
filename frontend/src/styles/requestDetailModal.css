@@ -426,3 +426,121 @@
   color: rgba(255,255,255,0.2);
   font-size: 13px;
 }
+
+/* ── Pricing input ────────────────────────────────────────────────────────── */
+.rdm-price-input-wrap {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.rdm-price-input-wrap:focus-within {
+  border-color: rgba(99,102,241,0.5);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+}
+
+.rdm-price-prefix {
+  padding: 0 6px 0 8px;
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.rdm-price-input {
+  width: 80px;
+  padding: 5px 8px 5px 0;
+  background: transparent;
+  border: none;
+  color: #4ade80;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+}
+
+/* hide arrows */
+.rdm-price-input::-webkit-outer-spin-button,
+.rdm-price-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.rdm-price-input[type=number] { -moz-appearance: textfield; }
+
+/* ── Save prices button ───────────────────────────────────────────────────── */
+.rdm-save-prices-wrap {
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.rdm-save-prices-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+}
+
+.rdm-save-prices-btn:hover:not(:disabled) { opacity: 0.9; }
+.rdm-save-prices-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Procure Manager action buttons ──────────────────────────────────────── */
+.rdm-processing-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(234,179,8,0.1);
+  border: 1px solid rgba(234,179,8,0.2);
+  border-radius: 11px;
+  color: #fbbf24;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 46px;
+}
+
+.rdm-processing-btn:hover {
+  background: rgba(234,179,8,0.2);
+  border-color: rgba(234,179,8,0.4);
+}
+
+.rdm-complete-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 11px;
+  color: #4ade80;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 46px;
+}
+
+.rdm-complete-btn:hover {
+  background: rgba(34,197,94,0.2);
+  border-color: rgba(34,197,94,0.4);
+}

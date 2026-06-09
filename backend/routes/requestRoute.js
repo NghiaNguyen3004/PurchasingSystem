@@ -20,7 +20,7 @@ requestRouter.patch('/:requestId/approve', authenticateToken, checkRole('Approve
 requestRouter.patch('/:requestId/reject', authenticateToken, checkRole('Approver'), rejectRequestController)
 
 //Procure Manager
-requestRouter.get('/approved', authenticateToken, checkRole('ProcureManager'), getApprovedRequestsController)
+requestRouter.get('/approved', authenticateToken, checkRole('Procure Manager'), getApprovedRequestsController)
 
 
 export default requestRouter
