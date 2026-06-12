@@ -1,4 +1,4 @@
-import { pgTable, serial, text, numeric, integer, timestamp, check, date} from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, numeric, integer, timestamp, check, date, unique} from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 //Roles
@@ -68,12 +68,13 @@ export const purchase_requests = pgTable('purchase_requests', {
 export const request_items = pgTable('request_items', {
     id: serial('id').primaryKey(),
     request_id: integer('request_id').notNull().references(() => purchase_requests.id, { onDelete: 'cascade' }),
-    supplier_item_id: integer('supplier_item_id').notNull().references(() => supplier_items.id).unique(),
+    supplier_item_id: integer('supplier_item_id').notNull().references(() => supplier_items.id),
     quantity: integer('quantity').notNull(),
     unit_price_snapshot: numeric('unit_price_snapshot', { precision: 10, scale: 2 })
 },
     // Constraint
     (request_items) => [
+        unique().on(request_items.request_id, request_items.supplier_item_id),
         check('quantity_check', sql`${request_items.quantity} > 0`),
         check('unit_price_check', sql`${request_items.unit_price_snapshot} >= 0`),
     ]

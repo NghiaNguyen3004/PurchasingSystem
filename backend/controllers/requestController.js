@@ -7,6 +7,7 @@ import {
 import { eq } from 'drizzle-orm'
 import { purchase_requests } from '../models/db/schema.js'
 import 'dotenv/config'
+import {sendWebhook} from '../models/webhook.js'
 
 export const createRequestController = async (req, res) => {
     const { 
@@ -85,23 +86,12 @@ export const approveRequestController = async (req, res) => {
     const { requestId } = req.params
     try{
         const data = await updateRequestStatus(requestId, 'Approved')
-
-
-        //Fire the webhook
-        await fetch(process.env.WEBHOOK_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                event: "request.approved",
-                request_id: data.id,
-                approved_by: req.user.username,
-                budget_code: data.budget_code,
-                timestamp: new Date().toISOString(),
-            })
+        // Fire the webhook
+        sendWebhook('request.approved', {
+            request_id: data.id,
+            approved_by: req.user.username,
+            budget_code: data.budget_code
         })
-
         res.status(200).json(data)
 
     }
