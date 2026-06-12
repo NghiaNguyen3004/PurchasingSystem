@@ -6,6 +6,7 @@ import {
 } from '../models/requestModel.js'
 import { eq } from 'drizzle-orm'
 import { purchase_requests } from '../models/db/schema.js'
+import 'dotenv/config'
 
 export const createRequestController = async (req, res) => {
     const { 
@@ -84,7 +85,25 @@ export const approveRequestController = async (req, res) => {
     const { requestId } = req.params
     try{
         const data = await updateRequestStatus(requestId, 'Approved')
+
+
+        //Fire the webhook
+        await fetch(process.env.WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                event: "request.approved",
+                request_id: data.id,
+                approved_by: req.user.username,
+                budget_code: data.budget_code,
+                timestamp: new Date().toISOString(),
+            })
+        })
+
         res.status(200).json(data)
+
     }
     catch (error) {
         console.error('Error approving request:', error)
@@ -97,6 +116,7 @@ export const rejectRequestController = async (req, res) => {
     const { requestId } = req.params
     try{
         const data = await updateRequestStatus(requestId, 'Rejected')
+        // Fire the webhook
         res.status(200).json(data)
     }
     catch (error) {
