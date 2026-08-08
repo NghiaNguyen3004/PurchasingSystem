@@ -1,5 +1,9 @@
-** SYSTEM DESIGN LEARNING THROUGH A PURCHASING SYSTEM**
-1. The tech stack
+## PROCURE2PAY
+## Description
+   - A system to manage purchase order from employees, with users authentication, role-based access control, procument.
+## Demo
+   [Link](github.com/NghiaNguyen3004/PurchasingSystem)
+## The tech stack
    - Database: PostgreSQL through Supabase
    - Server: Express.js
    - Frontend: React Vite
